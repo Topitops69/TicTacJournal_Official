@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2A2A2A"
+    android:foregroundTint="#FFFFFF"
+    tools:context=".Welcome">
+
+    <Button
+        android:id="@+id/btnSkip"
+        android:layout_width="168dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="412dp"
+        android:layout_marginEnd="27dp"
+        android:background="@drawable/roundstyle"
+        android:text="@string/skip"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/btnContinue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="168dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="412dp"
+        android:background="@drawable/roundstyle"
+        android:text="continue"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/btnSkip"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="222dp"
+        android:layout_marginBottom="15dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/what_s_your_name"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="373dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="19dp"
+        android:layout_marginBottom="398dp"
+        android:textColorHint="#FFAAAAAA"
+        app:hintTextColor="#EDE9E9"
+        app:layout_constraintBottom_toTopOf="@+id/btnSkip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tfName"
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:backgroundTint="#FFFFFF"
+            android:drawableStart="@drawable/baseline_account_circle_24"
+            android:hint="Please enter your name"
+            android:textColor="#FFFFFF" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

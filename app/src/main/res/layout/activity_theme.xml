@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2A2A2A"
+    tools:context=".Theme">
+
+    <ImageButton
+        android:id="@+id/btnDark"
+        android:layout_width="151dp"
+        android:layout_height="311dp"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="38dp"
+        android:contentDescription="Dark Mode"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblMode"
+        app:srcCompat="@drawable/dark" />
+
+    <ImageButton
+        android:id="@+id/btnLight"
+        android:layout_width="151dp"
+        android:layout_height="311dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="32dp"
+        android:contentDescription="Light Mode"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/btnDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblMode"
+        app:srcCompat="@drawable/light" />
+
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="168dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="69dp"
+        android:background="@drawable/roundstyle"
+        android:text="Continue"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnSkip" />
+
+    <Button
+        android:id="@+id/btnSkip"
+        android:layout_width="168dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginBottom="69dp"
+        android:background="@drawable/roundstyle"
+        android:text="@string/skip"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="93dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="137dp"
+        android:text="Light"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLight" />
+
+    <TextView
+        android:id="@+id/dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="93dp"
+        android:text="Dark"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnDark" />
+
+    <TextView
+        android:id="@+id/lblMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="105dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="104dp"
+        android:text="Choose your Mode"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

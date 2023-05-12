@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TicTac Journal</string>
+    <string name="buts">Buts</string>
+    <string name="get_started">Get Started</string>
+    <string name="log_in_and_restore">Log in and restore</string>
+    <string name="todo">TODO</string>
+    <string name="skip">Skip</string>
+    <string name="continue2">Continue</string>
+    <string name="what_s_your_name">What\'s your name?</string>
+    <string name="name">Name</string>
+</resources>
