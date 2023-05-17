@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Home"
+    android:background="#2C2C2C"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id ="@+id/frame_layout_home"
+        />
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+
+        app:backgroundTint="#2C2C2C"
+
+        app:fabCradleRoundedCornerRadius="50dp"
+        app:fabCradleMargin="10dp"
+
+
+        >
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/bottom_nav_menu"
+            android:background="@android:color/transparent"
+            app:labelVisibilityMode="labeled"
+            app:itemIconTint="@color/botom_item_background"
+            app:itemTextColor="@color/botom_item_background"
+
+            />
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/imageAddNoteMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="#3AAFCD"
+        android:src="@drawable/add"
+        app:layout_anchor="@id/bottomAppBar"
+        app:maxImageSize="50dp"
+        tools:layout_editor_absoluteX="64dp"
+        tools:layout_editor_absoluteY="389dp"
+        android:contentDescription="@string/btnAdd1"
+        />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

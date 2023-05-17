@@ -1,10 +1,12 @@
-package com.example.tictacjournalofficial;
+package com.example.tictacjournalofficial.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+
+import com.example.tictacjournalofficial.R;
 
 public class Theme extends AppCompatActivity {
 

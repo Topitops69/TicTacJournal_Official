@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.addJournal"
+    android:background = "@color/colorPrimaryDefault"
+    >
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/_50sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:clipToPadding="false"
+        android:contentDescription="@string/scroll"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            >
+            <ImageView
+                android:id="@+id/imageBack"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:contentDescription="@string/back"
+                android:src="@drawable/ic_back"
+                app:tint="@color/colorIcons"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/imageSave"
+                android:layout_width= "@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background = "@drawable/background_done_button"
+                android:contentDescription="@string/addjournal1"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_done"
+                app:layout_constraintBottom_toBottomOf="@id/imageBack"
+                app:tint="@color/colorIcons"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageBack"
+
+                />
+
+            <EditText
+                android:id="@+id/inputJournal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_bold"
+                android:hint="@string/title"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="noExcludeDescendants"
+                android:includeFontPadding="false"
+                android:inputType="text"
+
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="@dimen/_20ssp"
+                app:layout_constraintTop_toBottomOf="@id/imageBack"
+                />
+
+            <TextView
+                android:id ="@+id/textDateTime"
+                android:layout_width ="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily = "@font/ubuntu_regular"
+                android:includeFontPadding="false"
+                android:textColor="@color/colorIcons"
+                android:textSize="@dimen/_10ssp"
+                app:layout_constraintEnd_toEndOf="@id/inputJournal"
+                app:layout_constraintTop_toBottomOf="@id/inputJournal"
+                app:layout_constraintStart_toStartOf="@id/inputJournal"
+                />
+
+            <EditText
+                android:id="@+id/inputSubtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_medium"
+                android:hint="@string/subtitle"
+                android:importantForAutofill="noExcludeDescendants"
+                android:includeFontPadding="false"
+                android:inputType="text|textMultiLine"
+                android:minHeight="48dp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
+                android:textColor="@color/colorTextSubtitle"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="@dimen/_13sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/viewSubtitleIndicator"
+                app:layout_constraintTop_toBottomOf="@id/textDateTime" />
+
+            <View
+                android:id="@+id/viewSubtitleIndicator"
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:background="@drawable/background_subtitle_indicator"
+                app:layout_constraintBottom_toBottomOf="@id/inputSubtitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/inputSubtitle"
+                />
+
+            <EditText
+                android:id="@+id/inputJournalNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:background="@null"
+                android:fontFamily="@font/ubuntu_regular"
+                android:gravity="top"
+                android:hint="@string/type_your_journal_here"
+                android:importantForAutofill="noExcludeDescendants"
+                android:inputType="text|textMultiLine"
+                android:minHeight="@dimen/_100sdp"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputSubtitle"
+
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layoutQuickActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorQuickActionsBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+
+        android:padding="@dimen/_15sdp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp">
+
+        <ImageView
+            android:id ="@+id/imageAddNote"
+            android:layout_width="@dimen/_23sdp"
+            android:layout_height = "@dimen/_23sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:contentDescription="@string/addnote"
+            android:src="@drawable/ic_note"
+            app:tint="@color/colorIcons" />
+
+        <ImageView
+            android:id ="@+id/imageAddImage"
+            android:layout_width="@dimen/_23sdp"
+            android:layout_height = "@dimen/_23sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:contentDescription="@string/addimage"
+            android:src="@drawable/ic_image"
+            app:tint="@color/colorIcons" />
+
+        <ImageView
+            android:id ="@+id/imageAddLink"
+            android:layout_width="@dimen/_23sdp"
+            android:layout_height = "@dimen/_23sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:contentDescription="@string/addlink"
+            android:src="@drawable/ic_language"
+            app:tint="@color/colorIcons" />
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

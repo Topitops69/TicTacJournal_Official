@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#2A2A2A"
     android:foregroundTint="#FFFFFF"
-    tools:context=".Welcome">
+    tools:context=".activities.Welcome">
 
     <Button
         android:id="@+id/btnSkip"

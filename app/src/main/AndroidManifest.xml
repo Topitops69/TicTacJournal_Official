@@ -7,28 +7,48 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label=""
         android:supportsRtl="true"
-        android:theme="@style/Theme.TicTacJournal"
+        android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".Welcome_end"
-            android:exported="false" />
+            android:name=".activities.addJournal"
+
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+
+            />
         <activity
-            android:name=".Theme"
-            android:parentActivityName=".Password" />
+            android:name=".activities.Home"
+            android:exported="false"
+            android:theme="@style/Theme.TicTacJournal"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity
-            android:name=".Password"
-            android:parentActivityName=".Welcome" />
+            android:name=".activities.Welcome_end"
+            android:parentActivityName=".activities.Theme"
+            android:theme="@style/Theme.TicTacJournal" />
         <activity
-            android:name=".LoginAndRestore"
-            android:exported="false" />
+            android:name=".activities.Theme"
+            android:parentActivityName=".activities.Password"
+            android:theme="@style/Theme.TicTacJournal" />
         <activity
-            android:name=".Welcome"
-            android:exported="false" />
+            android:name=".activities.Password"
+            android:parentActivityName=".activities.Welcome"
+            android:theme="@style/Theme.TicTacJournal" />
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".activities.LoginAndRestore"
+            android:exported="false"
+            android:theme="@style/Theme.TicTacJournal" />
+        <activity
+            android:name=".activities.Welcome"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/Theme.TicTacJournal" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TicTacJournal">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -10,7 +10,26 @@
 
     <color name="colorPrimary">#375B64</color>
     <color name="colorPrimaryDark">#375B64</color>
-    <color name="colorAccent">#FF03DAC5</color>
+    <color name="colorAccent">#FFC400</color>
     <color name = "title_color">#FFFFFFFF</color>
+    <color name="colorPrimaryDefault">#2c2c2c</color>
+
+    <!--     //new Colors for journal-->
+    <color name = "colorWhite">#FFFFFFFF</color>
+    <color name="colorSearchIcon" >#DBDBDB</color>
+    <color name = "colorTextHint">#7b7b7b</color>
+    <color name = "colorQuickActionsBackground">#2f2d2e</color>
+    <color name="colorIcons">#A4a4a4</color>
+    <color name="colorTextSubtitle" >#cecece</color>
+    <color name="colorDefaultNoteColor">#333333</color>
+    <color name="colorNoteSubtitleText">#FAFAFA</color>
+    <color name="colorMiscellaneousBackground"> #1f1f1f</color>
+    <color name="colorNoteColor2"> #fdbe3b</color>
+    <color name="colorNoteColor3">#ff4842</color>
+    <color name="colorNoteColor4"> #3A52Fc</color>
+    <color name="noteColor5">#000000</color>
+    <color name="colorDelete">#FF4842</color>
+    <color name="colorSearchBackground">#333333</color>
+
     <!--    <color name = "ActionBarTitleColor">#ffffff</color>-->
 </resources>

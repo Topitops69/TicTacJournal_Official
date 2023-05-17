@@ -8,4 +8,25 @@
     <string name="continue2">Continue</string>
     <string name="what_s_your_name">What\'s your name?</string>
     <string name="name">Name</string>
+    <string name="journal">Journal</string>
+    <string name="xoxo">XOXO</string>
+    <string name="insights">Insights</string>
+    <string name="settings">Settings</string>
+    <string name="btnAdd1">Add Item</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_journal">Search journal</string>
+    <string name="my_journals">My Journals</string>
+    <string name="search_icon">Search icon</string>
+    <string name="title">Title</string>
+    <string name="journal_subtitle">Journal Subtitle</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="scroll">scroll</string>
+    <string name="type_your_journal_here">Type your journal here..</string>
+    <string name="back">back</string>
+    <string name="addjournal1">addJournal1</string>
+    <string name="addnote">addNote</string>
+    <string name="addimage">addImage</string>
+    <string name="addlink">addLink</string>
+
 </resources>
