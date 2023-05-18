@@ -8,12 +8,29 @@
     android:foregroundTint="#FFFFFF"
     tools:context=".activities.Welcome">
 
+
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="168dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="159dp"
+        android:background="@drawable/roundstyle"
+        android:text="continue"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnSkip" />
+
     <Button
         android:id="@+id/btnSkip"
         android:layout_width="168dp"
         android:layout_height="67dp"
         android:layout_marginStart="21dp"
-        android:layout_marginTop="412dp"
+        android:layout_marginTop="484dp"
         android:layout_marginEnd="27dp"
         android:background="@drawable/roundstyle"
         android:text="@string/skip"
@@ -22,20 +39,6 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/btnContinue"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
-
-    <Button
-        android:id="@+id/btnContinue"
-        android:layout_width="168dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="412dp"
-        android:background="@drawable/roundstyle"
-        android:text="continue"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/btnSkip"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
     <TextView

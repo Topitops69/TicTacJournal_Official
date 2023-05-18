@@ -1,0 +1,45 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="Journal"
+        android:id="@+id/journal"
+        android:icon="@drawable/book2"
+        android:menuCategory="secondary"
+        app:itemTextColor="#FFFFFF"
+        app:showAsAction="ifRoom"
+        />
+
+
+
+
+    <item
+        android:title="@string/xoxo"
+        android:id="@+id/XOXO"
+        android:icon="@drawable/tictac3"
+        android:menuCategory="secondary"
+        app:showAsAction="ifRoom"/>
+
+
+    <item
+        android:title=""
+        android:id="@+id/holder"
+        android:menuCategory="secondary"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:title="@string/insights"
+        android:id="@+id/insight"
+        android:icon="@drawable/insight"
+        android:menuCategory="secondary"
+        app:showAsAction="ifRoom"/>
+
+
+    <item
+        android:title="@string/settings"
+        android:id="@+id/Settings"
+        android:icon="@drawable/setting"
+        android:menuCategory="secondary"
+        app:showAsAction="ifRoom"/>
+
+
+</menu>
