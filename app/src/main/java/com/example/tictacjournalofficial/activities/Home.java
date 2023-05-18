@@ -22,7 +22,7 @@ public class Home extends AppCompatActivity {
     public static int REQUEST_CODE_ADD_JOURNAL_NOTE = 1;
     ActivityHomeBinding binding;
 
-
+    //practise
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
