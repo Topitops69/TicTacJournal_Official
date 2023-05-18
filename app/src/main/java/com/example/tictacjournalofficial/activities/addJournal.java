@@ -14,15 +14,18 @@ import android.widget.Toast;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
 import com.example.tictacjournalofficial.entities.Journal;
+import com.example.tictacjournalofficial.quotes.QuotesList;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class addJournal extends AppCompatActivity {
     private EditText inputJournalTitle, inputJournalSubtitle, inputJournalText;
     private TextView textDateTime;
-
+    private final List<QuotesList> quotesListList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
