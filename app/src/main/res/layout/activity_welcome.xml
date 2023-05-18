@@ -11,44 +11,40 @@
 
     <Button
         android:id="@+id/btnContinue"
-        android:layout_width="168dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="22dp"
-        android:layout_marginBottom="159dp"
+        android:layout_width="136dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="104dp"
         android:background="@drawable/roundstyle"
         android:text="continue"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnSkip" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btnSkip"
-        android:layout_width="168dp"
-        android:layout_height="67dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="484dp"
-        android:layout_marginEnd="27dp"
+        android:layout_width="136dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="104dp"
         android:background="@drawable/roundstyle"
         android:text="@string/skip"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/btnContinue"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="222dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="201dp"
+        android:layout_marginBottom="38dp"
         android:fontFamily="sans-serif"
         android:text="@string/what_s_your_name"
         android:textColor="#FFFFFF"
@@ -61,16 +57,15 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
-        android:layout_width="373dp"
-        android:layout_height="68dp"
+        android:layout_width="306dp"
+        android:layout_height="95dp"
         android:layout_marginStart="19dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="19dp"
-        android:layout_marginBottom="398dp"
         android:textColorHint="#FFAAAAAA"
         app:hintTextColor="#EDE9E9"
-        app:layout_constraintBottom_toTopOf="@+id/btnSkip"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2">
 
