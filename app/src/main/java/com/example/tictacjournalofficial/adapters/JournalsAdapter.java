@@ -1,8 +1,11 @@
 package com.example.tictacjournalofficial.adapters;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,13 +55,14 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.Journa
 
     static class JournalViewHolder extends RecyclerView.ViewHolder{
         TextView textTitle, textSubtitle, textDateTime;
-
+        LinearLayout layoutJournal;
 
         public JournalViewHolder(@NonNull View itemView) {
             super(itemView);
             textTitle = itemView.findViewById(R.id.textTitle);
             textSubtitle = itemView.findViewById(R.id.textSubtitle);
             textDateTime = itemView.findViewById(R.id.textDateTime);
+            layoutJournal = itemView.findViewById(R.id.layoutNote);
         }
 
         void setNote(Journal journal){
@@ -70,6 +74,14 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.Journa
                 textSubtitle.setText(journal.getSubtitle());
             }
             textDateTime.setText(journal.getDateTime());
+
+            GradientDrawable gradientDrawable = (GradientDrawable)  layoutJournal.getBackground();
+            if(journal.getColor() != null){
+                gradientDrawable.setColor(Color.parseColor(journal.getColor()));
+            }
+            else{
+                gradientDrawable.setColor(Color.parseColor("#333333"));
+            }
         }
     }
 
