@@ -137,6 +137,16 @@ public class addJournal extends AppCompatActivity {
             }
         }
 
+        findViewById(R.id.removeImage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageJournal.setImageBitmap(null);
+                imageJournal.setVisibility(View.GONE);
+                findViewById(R.id.removeImage).setVisibility(View.GONE);
+                selectedImagePath = "";
+            }
+        });
+
         //initialize the color here:
         initMiscellaneous();
         setSubtitleIndicatorColor();
@@ -157,6 +167,7 @@ public class addJournal extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     imageJournal.setImageBitmap(bitmap);
                     imageJournal.setVisibility(View.VISIBLE);
+                    findViewById(R.id.removeImage).setVisibility(View.VISIBLE);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(this, "Unable to load image", Toast.LENGTH_SHORT).show();
@@ -388,7 +399,7 @@ public class addJournal extends AppCompatActivity {
                     Log.d("Image URI", selectedImageUri.toString());
                     imageJournal.setImageURI(selectedImageUri);
                     imageJournal.setVisibility(View.VISIBLE);
-
+                    findViewById(R.id.removeImage).setVisibility(View.VISIBLE);
                     selectedImagePath = selectedImageUri.toString(); // We are saving uri string instead of file path
                 } else {
                     Log.e("Image URI", "Selected image URI is null");

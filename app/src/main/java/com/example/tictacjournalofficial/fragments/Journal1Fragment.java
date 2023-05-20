@@ -141,7 +141,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             @Override
             public void onClick(View v) {
                 // your code here
-                Toast.makeText(getContext(), "LinearLayout clicked", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getContext(), "LinearLayout clicked", Toast.LENGTH_SHORT).show();
                 //next quote, increment
                 currentQuotePosition++;
 

@@ -72,9 +72,9 @@
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="330dp"
-        android:layout_height="187dp"
+        android:layout_height="158dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/round_back_transparent10"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,21 +84,21 @@
         <TextView
             android:id="@+id/txtQuote"
             android:layout_width="match_parent"
-            android:layout_height="142dp"
+            android:layout_height="125dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:fontFamily="@font/ubuntu_regular"
             android:gravity="center"
             android:text="Quote of the day"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/copyBtn"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_alignParentStart="true"
             android:layout_below="@id/txtQuote"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="20dp"
             android:background="@drawable/ic_copy"
 
@@ -108,25 +108,24 @@
             android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_below="@id/txtQuote"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/ubuntu_lightitalic"
             android:text="Writer name"
-            android:textColor="#99FFFFFF"/>
+            android:textColor="#99FFFFFF" />
     </RelativeLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/journalsRecyclerView"
-        android:layout_width="366dp"
-        android:layout_height="468dp"
-        android:layout_marginTop="100dp"
+        android:layout_width="360dp"
+        android:layout_height="385dp"
+        android:layout_marginTop="30dp"
         android:clipToPadding="false"
         android:paddingEnd="@dimen/_12sdp"
-        android:paddingBottom="@dimen/_12sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="@dimen/_19sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />

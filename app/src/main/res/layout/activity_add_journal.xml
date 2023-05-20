@@ -129,38 +129,55 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/inputSubtitle"
                 />
-            <EditText
-                android:id="@+id/inputJournalNote"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_12sdp"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginEnd="@dimen/_12sdp"
-                android:layout_marginBottom="@dimen/_15sdp"
-                android:background="@null"
-                android:fontFamily="@font/ubuntu_regular"
-                android:gravity="top"
-                android:hint="@string/type_your_journal_here"
-                android:importantForAutofill="noExcludeDescendants"
-                android:inputType="text|textMultiLine"
-                android:minHeight="@dimen/_100sdp"
-                android:textColor="@color/colorWhite"
-                android:textColorHint="@color/colorTextHint"
-                android:textSize="@dimen/_13ssp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageJournal"
 
-                />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id ="@+id/removeImage"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height = "@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:contentDescription="delete"
+        android:background="@drawable/background_delete"
+        android:padding="@dimen/_4sdp"
+        android:src="@drawable/ic_delete"
+        android:visibility="gone"
+        app:tint="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="@id/imageJournal"
+        app:layout_constraintTop_toTopOf="@id/imageJournal"
+        />
+
+                <EditText
+                    android:id="@+id/inputJournalNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@null"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:gravity="top"
+                    android:hint="@string/type_your_journal_here"
+                    android:importantForAutofill="noExcludeDescendants"
+                    android:inputType="text|textMultiLine"
+                    android:minHeight="@dimen/_100sdp"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorTextHint"
+                    android:textSize="@dimen/_13ssp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imageJournal"
+
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
-    </ScrollView>
+        </ScrollView>
 
-    <include layout="@layout/layout_miscellaneous"/>
+        <include layout="@layout/layout_miscellaneous"/>
 
 
-<!--    <LinearLayout-->
+    <!--    <LinearLayout-->
 <!--        android:id="@+id/layoutQuickActions"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->
