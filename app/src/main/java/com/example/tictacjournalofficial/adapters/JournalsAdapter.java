@@ -3,6 +3,7 @@ package com.example.tictacjournalofficial.adapters;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.entities.Journal;
+import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
@@ -21,10 +23,12 @@ import java.util.List;
 public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.JournalViewHolder>{
 
     private List<Journal> journals;
+    private JournalsListeners journalsListeners;
 
-    public JournalsAdapter(List<Journal> journals){
+
+    public JournalsAdapter(List<Journal> journals, JournalsListeners journalsListeners){
         this.journals = journals;
-
+        this.journalsListeners = journalsListeners;
     }
 
     @NonNull
@@ -39,10 +43,38 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.Journa
         );
     }
 
+//    @Override
+//    public void onBindViewHolder(@NonNull JournalViewHolder holder, final int position) {
+//            holder.setNote(journals.get(position));
+//            holder.layoutJournal.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    journalsListeners.onJournalClicked(journals.get(position), position);
+//                }
+//            });
+//    }
+
     @Override
-    public void onBindViewHolder(@NonNull JournalViewHolder holder, int position) {
-            holder.setNote(journals.get(position));
+    public void onBindViewHolder(@NonNull JournalViewHolder holder, final int position) {
+        Journal journal = journals.get(position);
+        holder.setNote(journal);
+
+        if (journal.getImagePath() != null && !journal.getImagePath().isEmpty()) {
+            // Convert the image path string to a Uri object
+            Uri imageUri = Uri.parse(journal.getImagePath());
+            // Set the image URI to the ImageView
+            holder.imageJournal.setImageURI(imageUri);
+        }
+
+        holder.layoutJournal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                journalsListeners.onJournalClicked(journals.get(position), position);
+            }
+        });
     }
+
+
 
     @Override
     public int getItemCount() {

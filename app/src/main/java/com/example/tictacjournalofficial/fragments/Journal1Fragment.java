@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,10 +26,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tictacjournalofficial.activities.addJournal;
 import com.example.tictacjournalofficial.adapters.JournalsAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
 import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.databinding.FragmentJournal1Binding;
+import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.example.tictacjournalofficial.quotes.QuotesData;
 import com.example.tictacjournalofficial.quotes.QuotesList;
 
@@ -35,12 +39,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Journal1Fragment extends Fragment {
+public class Journal1Fragment extends Fragment implements JournalsListeners {
     //Journals
-    public static int REQUEST_CODE_ADD_JOURNAL_NOTE = 1;
+    //Request code to  add a new journal
+    public static final int REQUEST_CODE_ADD_JOURNAL_NOTE = 1;
+    //Request to update a journal
+    public static final int REQUEST_CODE_UPDATE_JOURNAL = 2;
+    //request to show an updated journal
+    public static final int REQUEST_CODE_SHOW_JOURNALS = 3;
+
     private RecyclerView journalsRecycleView;
     private List<Journal> journalList;
     private JournalsAdapter journalsAdapter;
+
+    private int journalClickedPosition = -1;
 
     //Quotes
     private TextView quoteText, writerName;
@@ -50,6 +62,37 @@ public class Journal1Fragment extends Fragment {
     //first quote position in array list
     //next if clicked
     private int currentQuotePosition = 0;
+
+    //listeners
+
+    // Create an instance of the contract for onActivityResult
+    ActivityResultLauncher<Intent> journalActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Here, we check the result returned from launched activity.
+                if (result.getResultCode() == android.app.Activity.RESULT_OK) {
+                    // Now checking whether it was a new journal or updated one.
+                    Intent data = result.getData();
+                    if (data != null && data.hasExtra("isNoteAdded")) {
+                        // New journal was added.
+                        getJournals(REQUEST_CODE_ADD_JOURNAL_NOTE);
+                    } else if (data != null && data.hasExtra("isNoteUpdated")) {
+                        // Existing journal was updated.
+                        getJournals(REQUEST_CODE_UPDATE_JOURNAL);
+                    }
+                }
+            });
+
+
+    @Override
+    public void onJournalClicked(Journal journal, int position) {
+        journalClickedPosition = position;
+        Intent intent = new Intent(requireActivity(), addJournal.class);
+        intent.putExtra("isViewOrUpdate", true);
+        intent.putExtra("journal", journal);
+        journalActivityResultLauncher.launch(intent);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,10 +105,10 @@ public class Journal1Fragment extends Fragment {
         );
 
         journalList = new ArrayList<>();
-        journalsAdapter = new JournalsAdapter(journalList);
+        journalsAdapter = new JournalsAdapter(journalList, this);
         journalsRecycleView.setAdapter(journalsAdapter);
 
-        getJournals();
+        getJournals(REQUEST_CODE_SHOW_JOURNALS);
 
 
         //Quote code part
@@ -79,17 +122,18 @@ public class Journal1Fragment extends Fragment {
             public void onClick(View v) {
                 ClipboardManager clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                 CharSequence label;
-                ClipData clipData = ClipData.newPlainText("quote", qList.get(currentQuotePosition).getQoute()+"\nby " +qList.get(currentQuotePosition).getWriter());
+                ClipData clipData = ClipData.newPlainText("quote", qList.get(currentQuotePosition).getQoute() + "\nby " + qList.get(currentQuotePosition).getWriter());
                 clipboardManager.setPrimaryClip(clipData);
                 Toast.makeText(requireActivity(), "Quote copied to clipboard", Toast.LENGTH_SHORT).show();
             }
         });
 
+        //listeners
 
 
         qList.addAll(QuotesData.getLifeQuotes());
 
-      //get first quote here and set to TextView
+        //get first quote here and set to TextView
         //default is pos 0
         setQuoteToTextView();
 
@@ -102,7 +146,7 @@ public class Journal1Fragment extends Fragment {
                 currentQuotePosition++;
 
                 //check if more quotes are available in the list else only the first quote
-                if(currentQuotePosition >= qList.size()){
+                if (currentQuotePosition >= qList.size()) {
                     currentQuotePosition = 0;
                 }
 
@@ -111,12 +155,18 @@ public class Journal1Fragment extends Fragment {
         });
 
 
-
         // Return the root view of the binding object
         return binding.getRoot();
     }
 
-    private void getJournals(){
+    @Override
+    public void onResume() {
+        super.onResume();
+        // This will refresh the journals every time the fragment is resumed.
+        getJournals(REQUEST_CODE_SHOW_JOURNALS);
+    }
+
+    private void getJournals(final int requestCode) {
 
         @SuppressLint("StaticFieldLeak")
         class GetJournalsTask extends AsyncTask<Void, Void, List<Journal>> {
@@ -130,30 +180,45 @@ public class Journal1Fragment extends Fragment {
             protected void onPostExecute(List<Journal> journals) {
                 super.onPostExecute(journals);
 
-                if(journalList.size() == 0){
+                if (requestCode == REQUEST_CODE_SHOW_JOURNALS) {
+                    journalList.clear();  // clear the existing list
+                    journalList.addAll(journals);  // add all the new data
+                    journalsAdapter.notifyDataSetChanged();
+                } else if (requestCode == REQUEST_CODE_ADD_JOURNAL_NOTE) {
+                    journalList.clear();
                     journalList.addAll(journals);
                     journalsAdapter.notifyDataSetChanged();
-                }else{
-                    journalList.add(0, journals.get(0));
-                    journalsAdapter.notifyItemInserted(0);
+                    journalsRecycleView.smoothScrollToPosition(0);
+                } else if (requestCode == REQUEST_CODE_UPDATE_JOURNAL) {
+                    journalList.clear();
+                    journalList.addAll(journals);
+                    journalsAdapter.notifyDataSetChanged();
                 }
-                journalsRecycleView.smoothScrollToPosition(0);
             }
+
         }
         new GetJournalsTask().execute();
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE_ADD_JOURNAL_NOTE && resultCode == RESULT_OK){
-            getJournals();
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == REQUEST_CODE_ADD_JOURNAL_NOTE && resultCode == RESULT_OK) {
+//            if (data != null && data.hasExtra("isNoteAdded")) {
+//                // New journal was added.
+//                getJournals(REQUEST_CODE_ADD_JOURNAL_NOTE);
+//            }
+//        } else if (requestCode == REQUEST_CODE_UPDATE_JOURNAL && resultCode == RESULT_OK) {
+//            if (data != null && data.hasExtra("isNoteUpdated")) {
+//                // Existing journal was updated.
+//                getJournals(REQUEST_CODE_UPDATE_JOURNAL);
+//            }
+//        }
+//    }
 
-        }
-    }
 
-    public void setQuoteToTextView(){
+    public void setQuoteToTextView() {
         //get quote from list from current quote position
         quoteText.setText(qList.get(currentQuotePosition).getQoute());
 
@@ -161,6 +226,5 @@ public class Journal1Fragment extends Fragment {
         writerName.setText(qList.get(currentQuotePosition).getWriter());
 
     }
-
 
 }

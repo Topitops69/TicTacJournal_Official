@@ -1,5 +1,7 @@
 package com.example.tictacjournalofficial.activities;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -54,12 +57,49 @@ public class addJournal extends AppCompatActivity {
     //image
     public static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int REQUEST_CODE_SELECT_IMAGE = 2;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
+
+    private Journal alreadyAvailableJournal;
+
+    //For depreciated API
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+    private ActivityResultLauncher<Intent> selectImageLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_journal);
 
+        // Initialize the requestPermissionLauncher
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                selectImageLauncher.launch(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+            } else {
+                Toast.makeText(this, "Permission to read external storage denied. Unable to add images.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Initialize the selectImageLauncher
+        selectImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri selectedImageUri = result.getData().getData();
+                if (selectedImageUri != null) {
+                    try {
+                        InputStream inputStream = getInputStreamFromUri(selectedImageUri);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        imageJournal.setImageBitmap(bitmap);
+                        imageJournal.setVisibility(View.VISIBLE);
+
+                        selectedImagePath = selectedImageUri.toString(); // We are saving uri string instead of file path
+                    } catch (FileNotFoundException e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+
+        // Initialize the UI components
         ImageView imageBack = findViewById(R.id.imageBack);
         imageBack.setOnClickListener(v -> onBackPressed());
 
@@ -76,17 +116,59 @@ public class addJournal extends AppCompatActivity {
         ImageView imageSave = findViewById(R.id.imageSave);
         imageSave.setOnClickListener(v ->  saveJournal());
 
-
         //default color
         selectedJournalColor ="#333333";
 
         //initialize image here
         selectedImagePath = "";
 
+        Intent intent = getIntent();
+        if (intent.hasExtra("isViewOrUpdate")) {
+            boolean isViewOrUpdate = intent.getBooleanExtra("isViewOrUpdate", false);
+            if (isViewOrUpdate) {
+                alreadyAvailableJournal = (Journal) intent.getSerializableExtra("journal");
+                // Set the journal details in the EditText fields
+                inputJournalTitle.setText(alreadyAvailableJournal.getTitle());
+                inputJournalSubtitle.setText(alreadyAvailableJournal.getSubtitle());
+                inputJournalText.setText(alreadyAvailableJournal.getNoteText());
+                textDateTime.setText(alreadyAvailableJournal.getDateTime());
+
+                setViewOrUpdateJournal();
+            }
+        }
+
         //initialize the color here:
         initMiscellaneous();
         setSubtitleIndicatorColor();
     }
+
+    private void setViewOrUpdateJournal() {
+        if (alreadyAvailableJournal != null) {
+            inputJournalTitle.setText(alreadyAvailableJournal.getTitle());
+            inputJournalSubtitle.setText(alreadyAvailableJournal.getSubtitle());
+            inputJournalText.setText(alreadyAvailableJournal.getNoteText());
+            textDateTime.setText(alreadyAvailableJournal.getDateTime());
+
+            if (alreadyAvailableJournal.getImagePath() != null && !alreadyAvailableJournal.getImagePath().trim().isEmpty()){
+                selectedImagePath = alreadyAvailableJournal.getImagePath(); // Set the selectedImagePath here
+
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(Uri.parse(alreadyAvailableJournal.getImagePath()));
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    imageJournal.setImageBitmap(bitmap);
+                    imageJournal.setVisibility(View.VISIBLE);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Unable to load image", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            if (alreadyAvailableJournal.getColor() != null && !alreadyAvailableJournal.getColor().trim().isEmpty()) {
+                selectedJournalColor = alreadyAvailableJournal.getColor();
+            }
+        }
+    }
+
 
 
 
@@ -111,6 +193,10 @@ public class addJournal extends AppCompatActivity {
         journal.setColor(selectedJournalColor);
         journal.setImagePath(selectedImagePath);
 
+        //setting an id of new journal from an already available journal.
+        if(alreadyAvailableJournal != null){
+            journal.setId(alreadyAvailableJournal.getId());
+        }
         @SuppressLint("StaticFieldLeak")
         class SaveJournalTask extends AsyncTask<Void, Void, Void> {
 
@@ -222,6 +308,24 @@ public class addJournal extends AppCompatActivity {
             }
         });
 
+        if(alreadyAvailableJournal != null && alreadyAvailableJournal.getColor() != null && alreadyAvailableJournal.getColor().trim().isEmpty()){
+            switch (alreadyAvailableJournal.getColor()){
+                case "#fdbe3b":
+                    layoutMiscellaneous.findViewById(R.id.viewColor2).performClick();
+                    break;
+                case "#ff4842":
+                    layoutMiscellaneous.findViewById(R.id.viewColor3).performClick();
+                    break;
+                case "#3A52Fc":
+                    layoutMiscellaneous.findViewById(R.id.viewColor4).performClick();
+                    break;
+                case "#000000":
+                    layoutMiscellaneous.findViewById(R.id.viewColor5).performClick();
+                    break;
+            }
+        }
+
+        //add image code
         //add image code
         layoutMiscellaneous.findViewById(R.id.layoutAddImage).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,48 +340,42 @@ public class addJournal extends AppCompatActivity {
                             REQUEST_CODE_STORAGE_PERMISSION
                     );
                 } else {
-                    selectImage();
+                    selectImageLauncher.launch(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
                 }
             }
         });
+
     }
 
     private void setSubtitleIndicatorColor(){
         GradientDrawable gradientDrawable = (GradientDrawable) viewSubtitleIndicator.getBackground();
         gradientDrawable.setColor(Color.parseColor(selectedJournalColor));
     }
-
-    private void selectImage(){
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            if(intent.resolveActivity(getPackageManager()) != null){
-                startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
-            }
-    }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if(requestCode == REQUEST_CODE_STORAGE_PERMISSION && grantResults.length > 0){
-//            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                selectImage();
-//            }
-//            else{
-//                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_STORAGE_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
-            } else {
-                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
-            }
+    private void selectImage() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted, proceed with image selection
+            selectImageLauncher.launch(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+        } else {
+            // Permission not granted, request the permission
+            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
     }
+
+    // Handle permission request results
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted. You can read the external storage.
+            } else {
+                // Permission denied. You can't read the external storage.
+                Toast.makeText(this, "Permission to read external storage denied. Unable to add images.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -287,22 +385,21 @@ public class addJournal extends AppCompatActivity {
             if (data != null) {
                 Uri selectedImageUri = data.getData();
                 if (selectedImageUri != null) {
-                    try {
-                        InputStream inputStream = getInputStreamFromUri(selectedImageUri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                        imageJournal.setImageBitmap(bitmap);
-                        imageJournal.setVisibility(View.VISIBLE);
+                    Log.d("Image URI", selectedImageUri.toString());
+                    imageJournal.setImageURI(selectedImageUri);
+                    imageJournal.setVisibility(View.VISIBLE);
 
-                        selectedImagePath = selectedImageUri.toString(); // We are saving uri string instead of file path
-                    } catch (FileNotFoundException e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                    selectedImagePath = selectedImageUri.toString(); // We are saving uri string instead of file path
+                } else {
+                    Log.e("Image URI", "Selected image URI is null");
                 }
+            } else {
+                Log.e("Data", "Intent data is null");
             }
         }
     }
-
     private InputStream getInputStreamFromUri(Uri contentUri) throws FileNotFoundException {
         return getContentResolver().openInputStream(contentUri);
     }
 }
+
