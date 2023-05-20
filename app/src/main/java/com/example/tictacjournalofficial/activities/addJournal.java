@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,13 +16,16 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,6 +68,9 @@ public class addJournal extends AppCompatActivity {
     //For depreciated API
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private ActivityResultLauncher<Intent> selectImageLauncher;
+
+    //alert
+    private AlertDialog dialogDeleteJournal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -355,7 +362,66 @@ public class addJournal extends AppCompatActivity {
                 }
             }
         });
+        if(alreadyAvailableJournal != null){
+            layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setVisibility(View.VISIBLE);
+            layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    showDeleteJournalDialog();
+                }
+            });
+        }
 
+
+    }
+
+    private void showDeleteJournalDialog(){
+        if(dialogDeleteJournal == null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(addJournal.this);
+            View view = LayoutInflater.from(this).inflate(
+                    R.layout.layout_delete_journal,
+                    (ViewGroup) findViewById(R.id.layoutDeleteJournalContainer)
+            );
+            builder.setView(view);
+            dialogDeleteJournal = builder.create();
+            if(dialogDeleteJournal.getWindow() != null){
+                dialogDeleteJournal.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+            view.findViewById(R.id.textDeleteJournal).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    @SuppressLint("StaticFieldLeak")
+                    class DeleteJournalTask extends AsyncTask<Void, Void, Void>{
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            JournalsDatabase.getDatabase(getApplicationContext()).journalDao()
+                                    .deleteJournal(alreadyAvailableJournal);
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+                            Intent intent = new Intent();
+                            intent.putExtra("isNoteDeleted", true);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    }
+                    new DeleteJournalTask().execute();
+                }
+            });
+
+            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogDeleteJournal.dismiss();
+                }
+            });
+        }
+
+        dialogDeleteJournal.show();
     }
 
     private void setSubtitleIndicatorColor(){

@@ -75,10 +75,10 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                     Intent data = result.getData();
                     if (data != null && data.hasExtra("isNoteAdded")) {
                         // New journal was added.
-                        getJournals(REQUEST_CODE_ADD_JOURNAL_NOTE);
+                        getJournals(REQUEST_CODE_ADD_JOURNAL_NOTE, false);
                     } else if (data != null && data.hasExtra("isNoteUpdated")) {
                         // Existing journal was updated.
-                        getJournals(REQUEST_CODE_UPDATE_JOURNAL);
+                        getJournals(REQUEST_CODE_UPDATE_JOURNAL,data.getBooleanExtra("isNoteDeleted",false));
                     }
                 }
             });
@@ -108,7 +108,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         journalsAdapter = new JournalsAdapter(journalList, this);
         journalsRecycleView.setAdapter(journalsAdapter);
 
-        getJournals(REQUEST_CODE_SHOW_JOURNALS);
+        getJournals(REQUEST_CODE_SHOW_JOURNALS, false);
 
 
         //Quote code part
@@ -163,10 +163,10 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     public void onResume() {
         super.onResume();
         // This will refresh the journals every time the fragment is resumed.
-        getJournals(REQUEST_CODE_SHOW_JOURNALS);
+        getJournals(REQUEST_CODE_SHOW_JOURNALS, false);
     }
 
-    private void getJournals(final int requestCode) {
+    private void getJournals(final int requestCode, final boolean isJournalDeleted) {
 
         @SuppressLint("StaticFieldLeak")
         class GetJournalsTask extends AsyncTask<Void, Void, List<Journal>> {
@@ -190,9 +190,20 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                     journalsAdapter.notifyDataSetChanged();
                     journalsRecycleView.smoothScrollToPosition(0);
                 } else if (requestCode == REQUEST_CODE_UPDATE_JOURNAL) {
+                    /*
+                        if (request code)remove journal from the list first then check if na delete ba or wala
+                        if yes kay i update, else i update natu to that same position where we removed it
+                     */
                     journalList.clear();
                     journalList.addAll(journals);
                     journalsAdapter.notifyDataSetChanged();
+                    if(isJournalDeleted){
+                        journalsAdapter.notifyItemRemoved(journalClickedPosition);
+                    }else{
+                        journalList.add(journalClickedPosition, journals.get(journalClickedPosition));
+                        //journalsAdapter.notifyItemChanged(journalClickedPosition);
+                        journalsAdapter.notifyDataSetChanged();
+                    }
                 }
             }
 
