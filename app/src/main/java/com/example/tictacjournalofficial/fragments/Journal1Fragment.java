@@ -17,15 +17,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.activities.addJournal;
 import com.example.tictacjournalofficial.adapters.JournalsAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
@@ -34,6 +38,7 @@ import com.example.tictacjournalofficial.databinding.FragmentJournal1Binding;
 import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.example.tictacjournalofficial.quotes.QuotesData;
 import com.example.tictacjournalofficial.quotes.QuotesList;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,13 +62,17 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     //Quotes
     private TextView quoteText, writerName;
     private ImageView btnCopy;
+
+    EditText inputSearch;
     private final List<QuotesList> qList = new ArrayList<>();
 
     //first quote position in array list
     //next if clicked
     private int currentQuotePosition = 0;
 
-    //listeners
+    //bottom nav
+    private BottomNavigationView bottomNavigationView;
+
 
     // Create an instance of the contract for onActivityResult
     ActivityResultLauncher<Intent> journalActivityResultLauncher = registerForActivityResult(
@@ -96,20 +105,63 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment through the binding object
         FragmentJournal1Binding binding = FragmentJournal1Binding.inflate(inflater, container, false);
 
         journalsRecycleView = binding.journalsRecyclerView;
+        // Assign the bottom navigation view from the binding
+
+
         journalsRecycleView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
         );
 
         journalList = new ArrayList<>();
         journalsAdapter = new JournalsAdapter(journalList, this);
         journalsRecycleView.setAdapter(journalsAdapter);
 
+
+
         getJournals(REQUEST_CODE_SHOW_JOURNALS, false);
 
+       //search
+        inputSearch = binding.inputSearch;
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                journalsAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(journalList.size() != 0){
+                    journalsAdapter.searchJournals(s.toString());
+                }
+
+                // Toggle the visibility of the bottom navigation view
+                if (s.toString().isEmpty()) {
+                    bottomNavigationView.setVisibility(View.VISIBLE); // Show the bottom navigation view
+                } else {
+                    bottomNavigationView.setVisibility(View.GONE); // Hide the bottom navigation view
+                }
+
+//                if (journalsAdapter.getItemCount() == 0) {
+//                    Toast.makeText(requireActivity(), "Journal not found", Toast.LENGTH_SHORT).show();
+//                }
+            }
+        });
+        //bottom nav
+
+        // Find the bottom navigation view in the activity layout
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
 
         //Quote code part
         quoteText = binding.txtQuote;
@@ -118,6 +170,8 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         btnCopy = binding.copyBtn;
 
         btnCopy.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
                 ClipboardManager clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -125,6 +179,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                 ClipData clipData = ClipData.newPlainText("quote", qList.get(currentQuotePosition).getQoute() + "\nby " + qList.get(currentQuotePosition).getWriter());
                 clipboardManager.setPrimaryClip(clipData);
                 Toast.makeText(requireActivity(), "Quote copied to clipboard", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -212,21 +267,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
 
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == REQUEST_CODE_ADD_JOURNAL_NOTE && resultCode == RESULT_OK) {
-//            if (data != null && data.hasExtra("isNoteAdded")) {
-//                // New journal was added.
-//                getJournals(REQUEST_CODE_ADD_JOURNAL_NOTE);
-//            }
-//        } else if (requestCode == REQUEST_CODE_UPDATE_JOURNAL && resultCode == RESULT_OK) {
-//            if (data != null && data.hasExtra("isNoteUpdated")) {
-//                // Existing journal was updated.
-//                getJournals(REQUEST_CODE_UPDATE_JOURNAL);
-//            }
-//        }
-//    }
+
 
 
     public void setQuoteToTextView() {

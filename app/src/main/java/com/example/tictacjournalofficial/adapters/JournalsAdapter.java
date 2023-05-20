@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +19,28 @@ import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
+
+import android.os.Handler;
+import android.os.Looper;
+
 
 public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.JournalViewHolder>{
 
     private List<Journal> journals;
     private JournalsListeners journalsListeners;
-
+    private Timer timer;
+    private List<Journal> journalsSource;
 
     public JournalsAdapter(List<Journal> journals, JournalsListeners journalsListeners){
         this.journals = journals;
         this.journalsListeners = journalsListeners;
+        journalsSource = journals;
     }
 
     @NonNull
@@ -131,4 +143,37 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.Journa
         }
     }
 
+    public void searchJournals(final String searchKeyword){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(searchKeyword.trim().isEmpty()){
+                    journals = journalsSource;
+                }else {
+                    ArrayList<Journal> temp = new ArrayList<>();
+                    for(Journal journal : journalsSource){
+                        if(journal.getTitle().toLowerCase().contains(searchKeyword.toLowerCase())
+                            || journal.getSubtitle().toLowerCase().contains(searchKeyword.toLowerCase())
+                            || journal.getNoteText().toLowerCase().contains(searchKeyword.toLowerCase())){
+                            temp.add(journal);
+                        }
+                    }
+                    journals = temp;
+                }
+                new Handler(Looper.getMainLooper()).post(new Runnable(){
+                    @Override
+                    public void run(){
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }, 500);
+    }
+
+    public void cancelTimer(){
+        if(timer != null){
+            timer.cancel();
+        }
+    }
 }
