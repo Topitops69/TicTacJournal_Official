@@ -1,5 +1,6 @@
 package com.example.tictacjournalofficial.adapters;
 
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.entities.Journal;
+import com.makeramen.roundedimageview.RoundedImageView;
+
 import java.util.List;
 
 public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.JournalViewHolder>{
@@ -56,6 +59,8 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.Journa
     static class JournalViewHolder extends RecyclerView.ViewHolder{
         TextView textTitle, textSubtitle, textDateTime;
         LinearLayout layoutJournal;
+        RoundedImageView imageJournal;
+
 
         public JournalViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +68,8 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.Journa
             textSubtitle = itemView.findViewById(R.id.textSubtitle);
             textDateTime = itemView.findViewById(R.id.textDateTime);
             layoutJournal = itemView.findViewById(R.id.layoutNote);
+            imageJournal = itemView.findViewById(R.id.imageJournal);
+
         }
 
         void setNote(Journal journal){
@@ -81,6 +88,13 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalsAdapter.Journa
             }
             else{
                 gradientDrawable.setColor(Color.parseColor("#333333"));
+            }
+            if(journal.getImagePath() != null){
+                imageJournal.setImageBitmap(BitmapFactory.decodeFile(journal.getImagePath()));
+                imageJournal.setVisibility(View.VISIBLE);
+            }
+            else{
+                imageJournal.setVisibility(View.GONE);
             }
         }
     }
