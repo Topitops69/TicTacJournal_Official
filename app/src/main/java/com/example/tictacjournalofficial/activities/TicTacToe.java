@@ -1,5 +1,10 @@
 package com.example.tictacjournalofficial.activities;
 
+import static java.security.AccessController.getContext;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -154,14 +159,38 @@ public class TicTacToe extends AppCompatActivity {
         boxPositions = new int[] {0,0,0,0,0,0,0,0,0}; //9 zero
         playerTurn = 1;
         totalSelectedBoxes = 1;
-        binding.image1.setImageResource(R.drawable.white_box);
-        binding.image2.setImageResource(R.drawable.white_box);
-        binding.image3.setImageResource(R.drawable.white_box);
-        binding.image4.setImageResource(R.drawable.white_box);
-        binding.image5.setImageResource(R.drawable.white_box);
-        binding.image6.setImageResource(R.drawable.white_box);
-        binding.image7.setImageResource(R.drawable.white_box);
-        binding.image8.setImageResource(R.drawable.white_box);
-        binding.image9.setImageResource(R.drawable.white_box);
+
+        int nightModeFlags = this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                // It is in Dark Mode
+                binding.image1.setImageResource(R.drawable.white_box);
+                binding.image2.setImageResource(R.drawable.white_box);
+                binding.image3.setImageResource(R.drawable.white_box);
+                binding.image4.setImageResource(R.drawable.white_box);
+                binding.image5.setImageResource(R.drawable.white_box);
+                binding.image6.setImageResource(R.drawable.white_box);
+                binding.image7.setImageResource(R.drawable.white_box);
+                binding.image8.setImageResource(R.drawable.white_box);
+                binding.image9.setImageResource(R.drawable.white_box);
+                break;
+
+            case Configuration.UI_MODE_NIGHT_NO:
+                // It is not in Dark Mode
+                binding.image1.setImageResource(R.drawable.pink_box);
+                binding.image2.setImageResource(R.drawable.pink_box);
+                binding.image3.setImageResource(R.drawable.pink_box);
+                binding.image4.setImageResource(R.drawable.pink_box);
+                binding.image5.setImageResource(R.drawable.pink_box);
+                binding.image6.setImageResource(R.drawable.pink_box);
+                binding.image7.setImageResource(R.drawable.pink_box);
+                binding.image8.setImageResource(R.drawable.pink_box);
+                binding.image9.setImageResource(R.drawable.pink_box);
+                break;
+
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                // It is undefined
+                break;
+        }
     }
 }

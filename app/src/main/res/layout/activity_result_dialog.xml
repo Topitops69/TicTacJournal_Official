@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#375B64"
+        style="@style/SCREEN"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:id="@+id/messageText"
             android:gravity="center"
             android:text="Results"
-            android:textColor="@color/white"
+            style="@style/TEXT"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -31,10 +31,9 @@
             android:id="@+id/startAgainButton"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:backgroundTint="@color/white"
+            style="@style/BUTTON"
             android:text="Start Again"
             android:layout_margin="20dp"
-            android:textColor="@color/black"
             app:cornerRadius = "20dp"/>
 
     </LinearLayout>

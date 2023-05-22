@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2C2C2C"
     tools:context=".activities.LoginAndRestore">
+
+    
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2c2c2c"
+    style="@style/SCREEN"
     android:orientation="vertical"
     tools:context=".fragments.InsightFragment">
 
@@ -17,7 +17,7 @@
         android:includeFontPadding="false"
         android:text="My Insights"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
+        style="@style/TEXT"
 
         android:textSize="@dimen/_20sdp" />
 
@@ -32,8 +32,9 @@
         <CalendarView
             android:layout_width="wrap_content"
             android:layout_height="320dp"
+            style="@style/CALENDAR"
 
-        ></CalendarView>
+            ></CalendarView>
 
 
     </LinearLayout>

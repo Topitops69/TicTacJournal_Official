@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDefault"
+    style="@style/SCREEN"
 
     tools:context=".fragments.Journal1Fragment">
 
@@ -19,7 +19,7 @@
         android:fontFamily="@font/ubuntu_bold"
         android:includeFontPadding="false"
         android:text="@string/my_journals"
-        android:textColor="#FFFFFF"
+        style="@style/TEXT"
 
         android:textSize="@dimen/_20sdp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -127,6 +127,7 @@
         android:layout_height="385dp"
         android:layout_marginTop="30dp"
         android:clipToPadding="false"
+        style="@style/TEXT"
         android:paddingEnd="@dimen/_12sdp"
         android:paddingBottom="@dimen/_19sdp"
         app:layout_constraintEnd_toEndOf="parent"

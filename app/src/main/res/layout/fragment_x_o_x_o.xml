@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     tools:context=".fragments.XOXOFragment"
-    android:background="#2c2c2c">
+    style="@style/SCREEN">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.cardview.widget.CardView
@@ -23,7 +23,7 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:padding="24dp"
-            android:background="#2A2A2A">
+            style="@style/SCREEN">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 android:textAlignment="center"
                 android:textSize="36sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"/>
+                style="@style/TEXT"/>
 
             <EditText
                 android:id="@+id/playerOne"
@@ -44,7 +44,7 @@
                 android:hint="Enter player one name"
                 android:maxLines="1"
                 android:padding="8dp"
-                android:textColor="@color/white"
+                style="@style/TEXT"
                 android:textColorHint="#918888"
                 android:textStyle="italic" />
 
@@ -59,7 +59,7 @@
                 android:hint="Enter player two name"
                 android:maxLines="1"
                 android:padding="8dp"
-                android:textColor="@color/white"
+                style="@style/TEXT"
                 android:textColorHint="#918888"
                 android:textStyle="italic" />
             <Button
@@ -68,8 +68,7 @@
                 android:layout_marginTop="30dp"
                 android:id="@+id/startGameButton"
                 android:text="Start Game"
-                android:textColor="#FFFFFF"
-                android:background="@drawable/roundstyle"
+                style="@style/BUTTON"
                 android:textSize="18sp"
                 app:cornerRadius = "20dp"/>
         </LinearLayout>
