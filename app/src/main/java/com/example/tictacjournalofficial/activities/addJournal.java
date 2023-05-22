@@ -328,16 +328,16 @@ public class addJournal extends AppCompatActivity {
 
         if(alreadyAvailableJournal != null && alreadyAvailableJournal.getColor() != null && alreadyAvailableJournal.getColor().trim().isEmpty()){
             switch (alreadyAvailableJournal.getColor()){
-                case "#fdbe3b":
+                case "#fdbe3b":  // feeling Very Happy
                     layoutMiscellaneous.findViewById(R.id.viewColor2).performClick();
                     break;
-                case "#ff4842":
+                case "#ff4842":  //Feeling Angry
                     layoutMiscellaneous.findViewById(R.id.viewColor3).performClick();
                     break;
-                case "#3A52Fc":
+                case "#3A52Fc"://Feeling Sad
                     layoutMiscellaneous.findViewById(R.id.viewColor4).performClick();
                     break;
-                case "#000000":
+                case "#000000": // feeling cool
                     layoutMiscellaneous.findViewById(R.id.viewColor5).performClick();
                     break;
             }
