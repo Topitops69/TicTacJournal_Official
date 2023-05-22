@@ -17,7 +17,7 @@
         android:layout_height="@dimen/_40sdp"
         android:fontFamily="@font/ubuntu_medium"
         android:includeFontPadding="false"
-        android:text="Miscellaneous"
+        android:text="What are you feeling?"
         android:textColor="@color/colorWhite"
         android:gravity="center"
         android:textSize="@dimen/_13ssp"
@@ -47,12 +47,13 @@
                 android:layout_height="@dimen/_35sdp"
                 android:id="@+id/imageColor1"
                 android:contentDescription="app_name"
-                android:padding="@dimen/_10sdp"
-                android:src="@drawable/ic_done"
-                app:tint="@color/colorWhite"
+                android:padding="@dimen/_3sdp"
+                android:src="@drawable/ic_ok2"
+
                 android:layout_marginBottom="10dp"
 
-                 />
+                android:scaleType="centerCrop" />
+
         </FrameLayout>
 
         <FrameLayout
@@ -71,10 +72,11 @@
                 android:layout_height="@dimen/_35sdp"
                 android:id="@+id/imageColor2"
                 android:contentDescription="app_name2"
-                android:padding="@dimen/_10sdp"
+                android:padding="@dimen/_3sdp"
 
-                app:tint="@color/colorWhite"
+
                 android:layout_marginBottom="10dp"
+                android:scaleType="centerCrop"
                 />
         </FrameLayout>
 
@@ -94,9 +96,9 @@
                 android:layout_height="@dimen/_35sdp"
                 android:id="@+id/imageColor3"
                 android:contentDescription="app_name3"
-                android:padding="@dimen/_10sdp"
+                android:padding="@dimen/_3sdp"
 
-                app:tint="@color/colorWhite"
+
                 android:layout_marginBottom="10dp"
                 />
         </FrameLayout>
@@ -117,9 +119,9 @@
                 android:layout_height="@dimen/_35sdp"
                 android:id="@+id/imageColor4"
                 android:contentDescription="app_name"
-                android:padding="@dimen/_10sdp"
+                android:padding="@dimen/_3sdp"
 
-                app:tint="@color/colorWhite"
+
                 android:layout_marginBottom="10dp"
                 />
         </FrameLayout>
@@ -140,8 +142,8 @@
                 android:layout_height="@dimen/_35sdp"
                 android:id="@+id/imageColor5"
                 android:contentDescription="app_name"
-                android:padding="@dimen/_10sdp"
-                app:tint="@color/colorWhite"
+                android:padding="@dimen/_3sdp"
+
                 android:layout_marginBottom="10dp"
                 />
         </FrameLayout>

@@ -265,7 +265,7 @@ public class addJournal extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectedJournalColor = "#333333";
-                imageColor1.setImageResource(R.drawable.ic_done);
+                imageColor1.setImageResource(R.drawable.ic_ok2);
                 imageColor2.setImageResource(0);
                 imageColor3.setImageResource(0);
                 imageColor4.setImageResource(0);
@@ -279,7 +279,7 @@ public class addJournal extends AppCompatActivity {
             public void onClick(View v) {
                 selectedJournalColor = "#fdbe3b";
                 imageColor1.setImageResource(0);
-                imageColor2.setImageResource(R.drawable.ic_done);
+                imageColor2.setImageResource(R.drawable.ic_excited);
                 imageColor3.setImageResource(0);
                 imageColor4.setImageResource(0);
                 imageColor5.setImageResource(0);
@@ -293,7 +293,7 @@ public class addJournal extends AppCompatActivity {
                 selectedJournalColor = "#ff4842";
                 imageColor1.setImageResource(0);
                 imageColor2.setImageResource(0);
-                imageColor3.setImageResource(R.drawable.ic_done);
+                imageColor3.setImageResource(R.drawable.ic_angry1);
                 imageColor4.setImageResource(0);
                 imageColor5.setImageResource(0);
                 setSubtitleIndicatorColor();
@@ -307,7 +307,7 @@ public class addJournal extends AppCompatActivity {
                 imageColor1.setImageResource(0);
                 imageColor2.setImageResource(0);
                 imageColor3.setImageResource(0);
-                imageColor4.setImageResource(R.drawable.ic_done);
+                imageColor4.setImageResource(R.drawable.ic_sad1);
                 imageColor5.setImageResource(0);
                 setSubtitleIndicatorColor();
             }
@@ -321,7 +321,7 @@ public class addJournal extends AppCompatActivity {
                 imageColor2.setImageResource(0);
                 imageColor3.setImageResource(0);
                 imageColor4.setImageResource(0);
-                imageColor5.setImageResource(R.drawable.ic_done);
+                imageColor5.setImageResource(R.drawable.ic_cool);
                 setSubtitleIndicatorColor();
             }
         });

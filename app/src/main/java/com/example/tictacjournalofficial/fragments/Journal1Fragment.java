@@ -148,9 +148,19 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
 
                 // Toggle the visibility of the bottom navigation view
                 if (s.toString().isEmpty()) {
+                    // Display the quote viewer
                     bottomNavigationView.setVisibility(View.VISIBLE); // Show the bottom navigation view
+                    quoteText.setVisibility(View.VISIBLE);
+                    writerName.setVisibility(View.VISIBLE);
+                    btnCopy.setVisibility(View.VISIBLE);
+
                 } else {
                     bottomNavigationView.setVisibility(View.GONE); // Hide the bottom navigation view
+                    // Hide the quote viewer
+                    quoteText.setVisibility(View.GONE);
+                    writerName.setVisibility(View.GONE);
+                    btnCopy.setVisibility(View.GONE);
+
                 }
 
 //                if (journalsAdapter.getItemCount() == 0) {

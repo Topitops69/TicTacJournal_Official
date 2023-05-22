@@ -1,18 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2c2c2c"
+    android:orientation="vertical"
     tools:context=".fragments.InsightFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/myInsights"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Insight"
-        android:gravity="center"
+        android:layout_height="41dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/ubuntu_bold"
+        android:includeFontPadding="false"
+        android:text="My Insights"
+        android:textAlignment="center"
         android:textColor="#FFFFFF"
-        />
 
-</FrameLayout>
+        android:textSize="@dimen/_20sdp" />
+
+    <LinearLayout
+        android:background="@drawable/bg_calendar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_gravity="center"
+        >
+
+        <CalendarView
+            android:layout_width="wrap_content"
+            android:layout_height="320dp"
+
+        ></CalendarView>
+
+
+    </LinearLayout>
+
+</LinearLayout>
