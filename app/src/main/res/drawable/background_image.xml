@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/round_back_transparent10" />
+    <item android:drawable="@drawable/q4" /> <!-- Replace "your_image" with the actual drawable resource of your image -->
+    <!-- Use your existing shape drawable with rounded corners -->
+</layer-list>
