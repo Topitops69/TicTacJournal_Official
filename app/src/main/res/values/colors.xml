@@ -14,7 +14,7 @@
     <color name = "title_color">#FFFFFFFF</color>
     <color name="colorPrimaryDefault">#2c2c2c</color>
 
-    <!--     //new Colors for journal-->
+    <!--     //new Colors for journal Dark Mode-->
     <color name = "colorWhite">#FFFFFFFF</color>
     <color name="colorSearchIcon" >#DBDBDB</color>
     <color name = "colorTextHint">#7b7b7b</color>
@@ -30,6 +30,8 @@
     <color name="noteColor5">#000000</color>
     <color name="colorDelete">#FF4842</color>
     <color name="colorSearchBackground">#333333</color>
+
+
 
     <!--    <color name = "ActionBarTitleColor">#ffffff</color>-->
 </resources>
