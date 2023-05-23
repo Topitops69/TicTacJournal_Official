@@ -7,7 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.example.tictacjournalofficial.R;
+
+import com.example.tictacjournalofficial.Delete_Restore;
 import com.example.tictacjournalofficial.activities.LoginAndRestore;
 import com.example.tictacjournalofficial.activities.Password;
 import com.example.tictacjournalofficial.activities.Theme;
@@ -56,6 +57,14 @@ public class SettingsFragment extends Fragment {
         });
 
         btnBackup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Delete_Restore.class);
+                startActivity(intent);
+            }
+        });
+
+        btnEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), LoginAndRestore.class);

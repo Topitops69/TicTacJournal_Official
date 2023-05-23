@@ -4,9 +4,135 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2C2C2C"
-    tools:context=".activities.LoginAndRestore">
+    style="@style/SCREEN"
+    android:background="#2c2c2c"
+    android:foregroundTint="#FFFFFF"
+    tools:context=".activities.Welcome">
 
-    
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="480dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/TEXT"
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="201dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="sans-serif"
+            android:text="Email:"
+            android:textColor="#FFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+
+            />
+
+        <EditText
+            android:id="@+id/tfName"
+            android:layout_width="320dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="0dp"
+            android:backgroundTint="#FFF"
+            android:drawableStart="@drawable/ic_email"
+            android:ems="10"
+            android:hint="Please enter your email"
+            android:inputType="textPersonName"
+            android:text=""
+            android:textColorHint="#9F9F9F"
+            tools:layout_editor_absoluteX="99dp"
+            tools:layout_editor_absoluteY="819dp" />
+
+        <TextView
+            android:id="@+id/txtPass"
+            style="@style/TEXT"
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="201dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="sans-serif"
+            android:text="Password:"
+            android:textColor="#FFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+
+            />
+
+        <EditText
+            android:id="@+id/tfPass"
+            android:layout_width="320dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="0dp"
+            android:backgroundTint="#FFF"
+            android:drawableStart="@drawable/ic_lock"
+            android:ems="10"
+            android:hint="Please enter your password"
+            android:inputType="textPersonName"
+            android:text=""
+            android:textColorHint="#9F9F9F"
+            tools:layout_editor_absoluteX="99dp"
+            tools:layout_editor_absoluteY="819dp" />
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="146dp"
+            android:layout_marginTop="0dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnSign"
+                style="@style/BUTTON"
+                android:layout_width="136dp"
+                android:layout_height="49dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="340dp"
+                android:text="Sign Up"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnLogin"
+                style="@style/BUTTON"
+                android:layout_width="136dp"
+                android:layout_height="49dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="120dp"
+                android:text="Login"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnBackup"
+        style="@style/BUTTON"
+        android:layout_width="213dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="64dp"
+        android:text="Backup and Restore"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+    <!--  style="@style/SCREEN"-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

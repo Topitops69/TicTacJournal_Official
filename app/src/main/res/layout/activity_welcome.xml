@@ -5,76 +5,85 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/SCREEN"
+    android:background="#2c2c2c"
     android:foregroundTint="#FFFFFF"
     tools:context=".activities.Welcome">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/TEXT"
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="201dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="sans-serif"
+            android:text="@string/what_s_your_name"
+            android:textColor="#FFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+
+           />
+
+        <EditText
+            android:id="@+id/tfName"
+            android:layout_width="300dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="0dp"
+            android:backgroundTint="#FFF"
+            android:drawableStart="@drawable/baseline_account_circle_24"
+            android:ems="10"
+            android:hint="Enter your name"
+            android:inputType="textPersonName"
+            android:text=""
+            android:textColorHint="#9F9F9F"
+            tools:layout_editor_absoluteX="99dp"
+            tools:layout_editor_absoluteY="819dp" />
+
+
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnContinue"
+        style="@style/BUTTON"
         android:layout_width="136dp"
         android:layout_height="49dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginBottom="80dp"
         android:text="continue"
         android:textSize="16sp"
         android:textStyle="bold"
-        style="@style/BUTTON"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btnSkip"
+        style="@style/BUTTON"
         android:layout_width="136dp"
         android:layout_height="49dp"
         android:layout_marginStart="30dp"
-        android:layout_marginBottom="104dp"
-        style="@style/BUTTON"
+        android:layout_marginBottom="80dp"
         android:text="@string/skip"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="201dp"
-        android:layout_marginBottom="38dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/what_s_your_name"
-        style="@style/TEXT"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
-        android:layout_width="306dp"
-        android:layout_height="95dp"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="19dp"
-        android:textColorHint="#FFAAAAAA"
-        app:hintTextColor="#EDE9E9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tfName"
-            android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:backgroundTint="#FFFFFF"
-            android:drawableStart="@drawable/baseline_account_circle_24"
-            android:hint="Please enter your name"
-            android:textColor="#FFFFFF" />
-    </com.google.android.material.textfield.TextInputLayout>
+    <!--  style="@style/SCREEN"-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

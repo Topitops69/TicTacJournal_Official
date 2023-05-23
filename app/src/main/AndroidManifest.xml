@@ -16,6 +16,10 @@
         tools:targetAPI="q"
         tools:targetApi="31">
         <activity
+            android:name=".Delete_Restore"
+            android:exported="false" />
+
+        <activity
             android:name=".activities.ResultDialog"
             android:exported="false" />
         <activity
