@@ -170,6 +170,7 @@ public class Password extends AppCompatActivity implements View.OnClickListener 
                 }
                 break;
         }
+
     }
 
     private void confirmPassCode() {
@@ -219,6 +220,7 @@ public class Password extends AppCompatActivity implements View.OnClickListener 
         if (getPassCode().equals(passCode)) {
             Toast.makeText(this, "Passcode correct, proceeding...", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, Theme.class));
+            //finish();
         } else {
             Toast.makeText(this, "Invalid Passcode. Try Again", Toast.LENGTH_SHORT).show();
             numList.clear(); // Clear the input

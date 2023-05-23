@@ -24,6 +24,8 @@ public class Theme extends AppCompatActivity {
     boolean nightMODE;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,18 +59,20 @@ public class Theme extends AppCompatActivity {
 
         btnSkip.setOnClickListener(v -> {
             startActivity(new Intent(new Intent(Theme.this, Welcome_end.class)));
+            //finish();
         });
         btnContinue.setOnClickListener(v -> {
             startActivity(new Intent(new Intent(Theme.this, Welcome_end.class)));
+            //finish();
         });
     }
 
     private void updateTheme() {
         if(nightMODE) {
             btnLight.setVisibility(View.VISIBLE);
-            btnDark.setVisibility(View.GONE);
+            btnDark.setVisibility(View.VISIBLE);
         } else {
-            btnLight.setVisibility(View.GONE);
+            btnLight.setVisibility(View.VISIBLE);
             btnDark.setVisibility(View.VISIBLE);
         }
     }

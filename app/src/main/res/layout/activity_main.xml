@@ -34,7 +34,7 @@
         android:layout_marginBottom="89dp"
         android:background="#00FFFFFF"
         android:text="Log in and Restore"
-        android:textColor="#FFFFFF"
+        style="@style/TEXT"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
