@@ -68,7 +68,22 @@
     </style>
 
     <style name="PLUS">
+        <item name="backgroundTint">#E07BA5</item>
+        <item name="tint">#FFF</item>
+    </style>
 
+    <style name="HOME">
+        <item name="backgroundTint">#FFF</item>
+    </style>
+
+    <style name="ICON">
+        <item name="itemIconTint">#E07BA5</item>
+        <item name="itemTextColor">#E07BA5</item>
+    </style>
+
+    <style name="SETTINGS">
+        <item name="android:textColor">#000</item>
+        <item name="android:tint">#000</item>
     </style>
 
 </resources>

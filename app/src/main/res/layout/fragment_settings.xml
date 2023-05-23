@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2c2c2c"
+    style="@style/SCREEN"
     tools:context=".fragments.SettingsFragment"
 
     >
@@ -20,7 +20,7 @@
         android:includeFontPadding="false"
 
         android:text="Settings"
-        android:textColor="#FFFF"
+        style="@style/SETTINGS"
         android:textSize="@dimen/_20sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,7 +44,7 @@
             android:fontFamily="@font/ubuntu_bold"
             android:includeFontPadding="false"
             android:text="Personal"
-            android:textColor="#FFFF"
+            style="@style/TEXT"
 
             android:textSize="@dimen/_14sdp"
             tools:layout_editor_absoluateX="0dp"
@@ -64,7 +64,7 @@
             android:paddingEnd="8dp"
             android:text="Name"
             android:textAlignment="viewStart"
-            android:textColor="#FFF"
+            style="@style/SETTINGS"
 
             />
 
@@ -82,7 +82,7 @@
             android:paddingEnd="8dp"
             android:text="Email"
             android:textAlignment="viewStart"
-            android:textColor="#FFF" />
+            style="@style/SETTINGS" />
 
         <Button
             android:id="@+id/btnTheme"
@@ -98,7 +98,7 @@
             android:paddingEnd="8dp"
             android:text="Themes"
             android:textAlignment="viewStart"
-            android:textColor="#FFF" />
+            style="@style/SETTINGS" />
 
         <Button
             android:id="@+id/btnPassword"
@@ -114,7 +114,7 @@
             android:paddingEnd="8dp"
             android:text="Password"
             android:textAlignment="viewStart"
-            android:textColor="#FFF" />
+            style="@style/SETTINGS" />
 
         <TextView
             android:id="@+id/textBackup"
@@ -124,7 +124,7 @@
             android:fontFamily="@font/ubuntu_bold"
             android:includeFontPadding="false"
             android:text="Backup and Restore"
-            android:textColor="#FFFF"
+            style="@style/SETTINGS"
 
             android:textSize="@dimen/_14sdp"
             tools:layout_editor_absoluateX="0dp"
@@ -145,7 +145,7 @@
             android:paddingEnd="8dp"
             android:text="Backup and Restore"
             android:textAlignment="viewStart"
-            android:textColor="#FFF" />
+            style="@style/SETTINGS" />
 
 
     </LinearLayout>

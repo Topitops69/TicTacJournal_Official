@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/SCREEN"
+    android:background="#2C2C2C"
     tools:context=".activities.MainActivity">
 
     <Button
@@ -16,7 +16,8 @@
         android:layout_marginEnd="53dp"
         android:layout_marginBottom="33dp"
 
-        style="@style/BUTTON"
+        android:background="@drawable/roundstyle"
+        android:textColor="#FFF"
         android:text="Get Started"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -34,7 +35,7 @@
         android:layout_marginBottom="89dp"
         android:background="#00FFFFFF"
         android:text="Log in and Restore"
-        style="@style/TEXT"
+        android:textColor="#FFF"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

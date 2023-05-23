@@ -49,4 +49,23 @@
         <item name="android:background">#FFF</item>
         <item name="android:textColor">#FFF</item>
     </style>
+
+    <style name="PLUS">
+        <item name="backgroundTint">#5EADC9</item>
+        <item name="tint">#000</item>
+    </style>
+
+    <style name="HOME">
+        <item name="backgroundTint">#2C2C2C</item>
+    </style>
+
+    <style name="ICON">
+        <item name="itemIconTint">#3AAFCD</item>
+        <item name="itemTextColor">#3AAFCD</item>
+    </style>
+
+    <style name="SETTINGS">
+        <item name="android:textColor">#FFF</item>
+        <item name="android:tint">#FFF</item>
+    </style>
 </resources>

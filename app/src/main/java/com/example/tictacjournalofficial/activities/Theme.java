@@ -39,7 +39,7 @@ public class Theme extends AppCompatActivity {
         btnContinue = findViewById(R.id.btnContinue);
 
         sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        nightMODE = sharedPreferences.getBoolean("night", false);
+        nightMODE = sharedPreferences.getBoolean("night", true);
 
         btnLight.setOnClickListener(v -> {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);

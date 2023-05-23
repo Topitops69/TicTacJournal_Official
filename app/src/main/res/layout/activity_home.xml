@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
 
-        app:backgroundTint="#2C2C2C"
+        style="@style/HOME"
 
         app:fabCradleRoundedCornerRadius="50dp"
         app:fabCradleMargin="10dp"
@@ -34,8 +34,7 @@
             app:menu="@menu/bottom_nav_menu"
             android:background="@android:color/transparent"
             app:labelVisibilityMode="labeled"
-            app:itemIconTint="@color/botom_item_background"
-            app:itemTextColor="@color/botom_item_background"
+            style="@style/ICON"
 
             />
     </com.google.android.material.bottomappbar.BottomAppBar>
@@ -47,7 +46,7 @@
         android:id="@+id/imageAddNoteMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:backgroundTint="#3AAFCD"
+        style="@style/PLUS"
         android:src="@drawable/add"
         app:layout_anchor="@id/bottomAppBar"
         app:maxImageSize="50dp"

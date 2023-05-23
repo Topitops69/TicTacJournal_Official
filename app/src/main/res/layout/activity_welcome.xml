@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/SCREEN"
-    android:background="#2c2c2c"
     android:foregroundTint="#FFFFFF"
     tools:context=".activities.Welcome">
 
@@ -13,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:orientation="vertical"
+        style="@style/SCREEN"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -29,7 +29,6 @@
             android:layout_marginBottom="20dp"
             android:fontFamily="sans-serif"
             android:text="@string/what_s_your_name"
-            android:textColor="#FFFF"
             android:textSize="20sp"
             android:textStyle="bold"
 
@@ -44,6 +43,7 @@
             android:backgroundTint="#FFF"
             android:drawableStart="@drawable/baseline_account_circle_24"
             android:ems="10"
+            style="@style/TEXT"
             android:hint="Enter your name"
             android:inputType="textPersonName"
             android:text=""
@@ -83,7 +83,7 @@
 
 
 
-    <!--  style="@style/SCREEN"-->
+<!--      style="@style/SCREEN"-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
