@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Delete_Restore"
+    android:background="#2c2c2c">
+
+    <TextView
+        android:id="@+id/textMySettings"
+        android:layout_width="342dp"
+
+        android:layout_height="41dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+
+        android:fontFamily="@font/ubuntu_bold"
+        android:includeFontPadding="false"
+        android:text="Settings"
+        android:textColor="#FFFF"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="550dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="28dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textMySettings">
+
+
+        <TextView
+            android:id="@+id/Personal"
+            android:layout_width="342dp"
+
+            android:layout_height="41dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:includeFontPadding="false"
+            android:text="Backup and Sync"
+            android:textColor="#FFFF"
+
+            android:textSize="@dimen/_14sdp"
+            tools:layout_editor_absoluateX="0dp"
+            tools:layout_editor_absoluteY="48dp" />
+
+        <Button
+            android:id="@+id/btnName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_sync"
+            android:drawableEnd="@drawable/ic_forward"
+            android:drawablePadding="8dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Sync Data"
+            android:textAlignment="viewStart"
+            android:textColor="#FFF"
+
+            />
+
+
+
+
+
+        <TextView
+            android:id="@+id/textBackup"
+            android:layout_width="342dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:includeFontPadding="false"
+            android:text="Delete all data"
+            android:textColor="#FFFF"
+
+            android:textSize="@dimen/_14sdp"
+            tools:layout_editor_absoluateX="0dp"
+            tools:layout_editor_absoluteY="48dp" />
+
+
+        <Button
+            android:id="@+id/btnBackup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_delete_forever"
+            android:drawableEnd="@drawable/ic_forward"
+            android:drawablePadding="8dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Delete all data"
+            android:textAlignment="viewStart"
+            android:textColor="#FFF" />
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
