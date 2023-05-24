@@ -68,4 +68,14 @@
         <item name="android:textColor">#FFF</item>
         <item name="android:tint">#FFF</item>
     </style>
+
+    <style name="Roundstyle">
+
+        <item name = "android:background">@drawable/icon</item>
+    </style>
+
+    <style name="Search">
+
+        <item name="android:background">@drawable/background_search</item>
+    </style>
 </resources>

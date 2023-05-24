@@ -34,7 +34,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/background_search"
+        style="@style/Search"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/_10sdp"
@@ -62,7 +62,7 @@
             android:importantForAutofill="no"
             android:includeFontPadding="false"
             android:inputType="text"
-            android:textColor="@color/colorWhite"
+            style="@style/TEXT"
             android:textColorHint="@color/colorTextHint"
             android:textSize="@dimen/_13ssp"
             tools:ignore="TouchTargetSizeCheck" />
