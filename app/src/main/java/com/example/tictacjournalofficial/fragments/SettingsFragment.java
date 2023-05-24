@@ -40,7 +40,7 @@ public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
 
     String PublishableKey = "pk_test_51NB23dBuxFvTLNZkZ1A78U7N61IDjOhpXzu1Vm4IsxaUZ1I4IgSIKIc4ZnC7AgADVyVLTbUtdOPKhhMfqjAsfVkb00c8GsfC58";
-    String SecretKey = "sk_test_51NB23dBuxFvTLNZkE1o423JlPyOtSKhfY83ukDGZDOFNtuz3TCZAZjFJdI9CqsMvCc5JX39Df9cIxNrd6hRZnBLF00Gq2ySG4y";
+    String SecretKey = "sk_test_51NB23dBuxFvTLNZkE1o423JlPyOtSKhfY83ukDGZDOFNtuz3TCZAZjFJdI9CqsMvCc5JX39Df9cIxNrd6hRZnBLF00Gq2ySG4y ";
     String CustomerId;
     String EphericalKey;
     String ClientSecret;
@@ -58,13 +58,7 @@ public class SettingsFragment extends Fragment {
 
         PaymentConfiguration.init(getActivity(), PublishableKey);
 
-        paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
-            onPaymentResult(paymentSheetResult);
-        });
-
-        btnPayment.setOnClickListener(v -> {
-            paymentFlow();
-        });
+        paymentSheet = new PaymentSheet(this, this::onPaymentResult);
 
         StringRequest request = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/customers",
                 new Response.Listener<String>() {
@@ -104,7 +98,7 @@ public class SettingsFragment extends Fragment {
 
 
         btnPayment.setOnClickListener(v -> {
-
+            paymentFlow();
         });
 
         btnTheme.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +148,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void paymentFlow() {
-        paymentSheet.presentWithPaymentIntent(ClientSecret, new PaymentSheet.Configuration("Tic Tac Journal",new PaymentSheet.CustomerConfiguration(
+        paymentSheet.presentWithPaymentIntent(ClientSecret, new PaymentSheet.Configuration("Tic Tac Journal", new PaymentSheet.CustomerConfiguration(
                 CustomerId,
                 EphericalKey
         )));
