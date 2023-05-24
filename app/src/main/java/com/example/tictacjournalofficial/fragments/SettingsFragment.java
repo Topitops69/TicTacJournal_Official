@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -53,8 +54,8 @@ public class SettingsFragment extends Fragment {
         Button btnTheme = binding.btnTheme;
         Button btnEmail = binding.btnEmail;
         Button btnPassword = binding.btnPassword;
-        Button btnBackup = binding.btnBackup;
         Button btnPayment = binding.btnPayment;
+        // Switch switch = binding.btnSwitch;
 
         PaymentConfiguration.init(getActivity(), PublishableKey);
 
@@ -69,7 +70,7 @@ public class SettingsFragment extends Fragment {
 
                             CustomerId = object.getString("id");
 
-                            Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
 
                             getEmphericalKey();
 
@@ -127,14 +128,6 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        btnBackup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Delete_Restore.class);
-                startActivity(intent);
-            }
-        });
-
         btnEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,7 +163,7 @@ public class SettingsFragment extends Fragment {
 
                             EphericalKey = object.getString("id");
 
-                            Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
 
                             getClientSecret(CustomerId, EphericalKey);
 
@@ -216,7 +209,7 @@ public class SettingsFragment extends Fragment {
 
                             ClientSecret = object.getString("client_secret");
 
-                            Toast.makeText( getActivity(), ClientSecret, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText( getActivity(), ClientSecret, Toast.LENGTH_SHORT).show();
 
 
                         } catch (JSONException e) {
