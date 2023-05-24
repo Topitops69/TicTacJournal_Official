@@ -123,7 +123,7 @@
             android:layout_marginTop="40dp"
             android:fontFamily="@font/ubuntu_bold"
             android:includeFontPadding="false"
-            android:text="Backup and Restore"
+            android:text="Others"
             style="@style/SETTINGS"
 
             android:textSize="@dimen/_14sdp"
@@ -131,21 +131,22 @@
             tools:layout_editor_absoluteY="48dp" />
 
 
-        <Button
-            android:id="@+id/btnBackup"
+        <Switch
+            android:id="@+id/btnSwitch"
+            style="@style/SETTINGS"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginBottom="8dp"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_backup"
-            android:drawableEnd="@drawable/ic_forward"
+            android:drawableStart="@drawable/ic_notif"
             android:drawablePadding="8dp"
             android:gravity="start|center_vertical"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="Backup and Restore"
+            android:text="Set Reminder"
             android:textAlignment="viewStart"
-            style="@style/SETTINGS" />
+            android:textSize="@dimen/_13ssp"
+
+            />
 
         <Button
             android:id="@+id/btnPayment"

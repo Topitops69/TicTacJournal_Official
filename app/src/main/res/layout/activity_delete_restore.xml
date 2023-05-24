@@ -59,6 +59,7 @@
             android:gravity="start|center_vertical"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
+            android:text="Sync Data"
             style="@style/TEXT"
             android:textAlignment="viewStart"
             android:textColor="#FFF"
