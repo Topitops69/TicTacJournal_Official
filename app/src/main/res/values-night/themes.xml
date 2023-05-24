@@ -46,7 +46,7 @@
 
     <!--    Welcome End if light mode on -->
     <style name="CALENDAR" >
-        <item name="android:background">#FFF</item>
+        <item name="android:background">@drawable/bg_calendar</item>
         <item name="android:textColor">#FFF</item>
     </style>
 
