@@ -2,6 +2,8 @@ package com.example.tictacjournalofficial.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +11,28 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.tictacjournalofficial.Delete_Restore;
 import com.example.tictacjournalofficial.activities.LoginAndRestore;
 import com.example.tictacjournalofficial.activities.Password;
 import com.example.tictacjournalofficial.activities.Theme;
 import com.example.tictacjournalofficial.activities.Welcome; // Ensure you've imported your Welcome activity
 import com.example.tictacjournalofficial.databinding.FragmentSettingsBinding;
+import com.stripe.android.PaymentConfiguration;
+import com.stripe.android.paymentsheet.PaymentSheet;
+import com.stripe.android.paymentsheet.PaymentSheetResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SettingsFragment extends Fragment {
@@ -33,7 +44,7 @@ public class SettingsFragment extends Fragment {
     String CustomerId;
     String EphericalKey;
     String ClientSecret;
-
+    PaymentSheet paymentSheet;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
@@ -44,6 +55,16 @@ public class SettingsFragment extends Fragment {
         Button btnPassword = binding.btnPassword;
         Button btnBackup = binding.btnBackup;
         Button btnPayment = binding.btnPayment;
+
+        PaymentConfiguration.init(getActivity(), PublishableKey);
+
+        paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
+            onPaymentResult(paymentSheetResult);
+        });
+
+        btnPayment.setOnClickListener(v -> {
+            paymentFlow();
+        });
 
         StringRequest request = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/customers",
                 new Response.Listener<String>() {
@@ -56,6 +77,7 @@ public class SettingsFragment extends Fragment {
 
                             Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
 
+                            getEmphericalKey();
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -65,9 +87,21 @@ public class SettingsFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer "+SecretKey);
+                return header;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(request);
+
+
 
         btnPayment.setOnClickListener(v -> {
 
@@ -119,9 +153,116 @@ public class SettingsFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private void paymentFlow() {
+        paymentSheet.presentWithPaymentIntent(ClientSecret, new PaymentSheet.Configuration("Tic Tac Journal",new PaymentSheet.CustomerConfiguration(
+                CustomerId,
+                EphericalKey
+        )));
+    }
+
+    private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
+        if(paymentSheetResult instanceof  PaymentSheetResult.Completed) {
+            Toast.makeText(getActivity(), "Payment Success ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getEmphericalKey() {
+        StringRequest request = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/ephemeral_keys",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject object = new JSONObject(response);
+
+                            EphericalKey = object.getString("id");
+
+                            Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
+
+                            getClientSecret(CustomerId, EphericalKey);
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer "+SecretKey);
+                header.put("Stripe-Version", "2022-11-15");
+                return header;
+            }
+
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("customer", CustomerId);
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(request);
+    }
+
+    private void getClientSecret(String customerId, String ephericalKey) {
+        StringRequest request = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/payment_intents",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject object = new JSONObject(response);
+
+                            ClientSecret = object.getString("client_secret");
+
+                            Toast.makeText( getActivity(), ClientSecret, Toast.LENGTH_SHORT).show();
+
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer "+SecretKey);
+                return header;
+            }
+
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("customer", CustomerId);
+                params.put("amount", "100"+"00");
+                params.put("currency", "USD");
+                params.put("automatic_payment_methods[enabled]", "true");
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(request);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null; // Clear binding when fragment's view is destroyed to prevent memory leaks
     }
+
 }
