@@ -147,6 +147,22 @@
             android:textAlignment="viewStart"
             style="@style/SETTINGS" />
 
+        <Button
+            android:id="@+id/btnPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_backup"
+            android:drawableEnd="@drawable/ic_forward"
+            android:drawablePadding="8dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Upgrade"
+            android:textAlignment="viewStart"
+            style="@style/SETTINGS" />
+
 
     </LinearLayout>
 
