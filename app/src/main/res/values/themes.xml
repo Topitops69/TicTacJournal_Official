@@ -77,8 +77,8 @@
     </style>
 
     <style name="ICON">
-        <item name="itemIconTint">#E07BA5</item>
-        <item name="itemTextColor">#E07BA5</item>
+        <item name="itemIconTint">#000</item>
+        <item name="itemTextColor">#000</item>
     </style>
 
     <style name="SETTINGS">

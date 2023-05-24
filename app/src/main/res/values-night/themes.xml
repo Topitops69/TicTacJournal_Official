@@ -60,8 +60,8 @@
     </style>
 
     <style name="ICON">
-        <item name="itemIconTint">#3AAFCD</item>
-        <item name="itemTextColor">#3AAFCD</item>
+        <item name="itemIconTint">#5EADC9</item>
+        <item name="itemTextColor">#5EADC9</item>
     </style>
 
     <style name="SETTINGS">

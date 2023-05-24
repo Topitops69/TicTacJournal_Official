@@ -6,7 +6,7 @@
         android:id="@+id/journal"
         android:icon="@drawable/book2"
         android:menuCategory="secondary"
-        app:itemTextColor="#FFFFFF"
+        app:itemTextColor="#FFF"
         app:showAsAction="ifRoom"
         />
 
