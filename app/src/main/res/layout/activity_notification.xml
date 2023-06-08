@@ -4,6 +4,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.NotificationActivity">
+    style="@style/SCREEN"
+    tools:context=".fragments.SettingsFragment"
+
+    >
+
+    <TextView
+        android:id="@+id/textMySettings"
+        android:layout_width="342dp"
+
+        android:layout_height="41dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/ubuntu_bold"
+        android:includeFontPadding="false"
+
+        android:text="Settings"
+        style="@style/SETTINGS"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="550dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textMySettings">
+
+
+        <TextView
+            android:id="@+id/Personal"
+            android:layout_width="342dp"
+
+            android:layout_height="41dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:includeFontPadding="false"
+            android:text="Notifications"
+            style="@style/TEXT"
+
+            android:textSize="@dimen/_14sdp"
+            tools:layout_editor_absoluateX="0dp"
+            tools:layout_editor_absoluteY="48dp" />
+
+
+        <Switch
+            android:id="@+id/btnSwitch"
+            style="@style/SETTINGS"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="8dp"
+            android:drawableStart="@drawable/ic_notif"
+            android:drawablePadding="8dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Set Reminder"
+            android:textAlignment="viewStart"
+            android:textSize="@dimen/_13ssp"
+            />
+
+
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

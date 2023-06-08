@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -109,6 +110,8 @@ public class addJournal extends AppCompatActivity {
         // Initialize the UI components
         ImageView imageBack = findViewById(R.id.imageBack);
         imageBack.setOnClickListener(v -> onBackPressed());
+
+
 
         inputJournalTitle = findViewById(R.id.inputJournal); //title ni siya
         inputJournalSubtitle = findViewById(R.id.inputSubtitle); //iyang subtitle
@@ -264,6 +267,7 @@ public class addJournal extends AppCompatActivity {
         layoutMiscellaneous.findViewById(R.id.viewColor1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Normal
                 selectedJournalColor = "#333333";
                 imageColor1.setImageResource(R.drawable.ic_ok2);
                 imageColor2.setImageResource(0);
@@ -277,6 +281,7 @@ public class addJournal extends AppCompatActivity {
         layoutMiscellaneous.findViewById(R.id.viewColor2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //excited
                 selectedJournalColor = "#fdbe3b";
                 imageColor1.setImageResource(0);
                 imageColor2.setImageResource(R.drawable.ic_excited);
@@ -290,6 +295,7 @@ public class addJournal extends AppCompatActivity {
         layoutMiscellaneous.findViewById(R.id.viewColor3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Angry
                 selectedJournalColor = "#ff4842";
                 imageColor1.setImageResource(0);
                 imageColor2.setImageResource(0);
@@ -303,6 +309,7 @@ public class addJournal extends AppCompatActivity {
         layoutMiscellaneous.findViewById(R.id.viewColor4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Sad
                 selectedJournalColor = "#3A52Fc";
                 imageColor1.setImageResource(0);
                 imageColor2.setImageResource(0);
@@ -316,6 +323,7 @@ public class addJournal extends AppCompatActivity {
         layoutMiscellaneous.findViewById(R.id.viewColor5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //cool
                 selectedJournalColor = "#000000";
                 imageColor1.setImageResource(0);
                 imageColor2.setImageResource(0);
@@ -477,6 +485,24 @@ public class addJournal extends AppCompatActivity {
     }
     private InputStream getInputStreamFromUri(Uri contentUri) throws FileNotFoundException {
         return getContentResolver().openInputStream(contentUri);
+    }
+
+    //back code
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Go Back?")
+                .setMessage("Are you sure you want to go back? Any unsaved changes will be lost.")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }
 

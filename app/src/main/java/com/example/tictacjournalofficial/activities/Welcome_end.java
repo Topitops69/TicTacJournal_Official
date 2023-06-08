@@ -19,7 +19,9 @@ public class Welcome_end extends AppCompatActivity {
 
         btnGot = findViewById(R.id.btnGot);
 
-        btnGot.setOnClickListener(View-> startActivity(new Intent(Welcome_end.this, Home.class)));
-       // finish();
+        btnGot.setOnClickListener(view -> {
+            startActivity(new Intent(Welcome_end.this, Home.class));
+            finish();
+        });
     }
 }

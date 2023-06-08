@@ -1,4 +1,4 @@
-package com.example.tictacjournalofficial.activities;
+package com.example.tictacjournalofficial.Firebase;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.tictacjournalofficial.Delete_Restore;
 import com.example.tictacjournalofficial.R;
 
 public class LoginAndRestore extends AppCompatActivity {

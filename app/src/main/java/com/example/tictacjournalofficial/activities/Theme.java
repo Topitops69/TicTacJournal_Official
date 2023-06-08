@@ -59,11 +59,11 @@ public class Theme extends AppCompatActivity {
 
         btnSkip.setOnClickListener(v -> {
             startActivity(new Intent(new Intent(Theme.this, Welcome_end.class)));
-            //finish();
+            finish();
         });
         btnContinue.setOnClickListener(v -> {
             startActivity(new Intent(new Intent(Theme.this, Welcome_end.class)));
-            //finish();
+            finish();
         });
     }
 
@@ -76,5 +76,4 @@ public class Theme extends AppCompatActivity {
             btnDark.setVisibility(View.VISIBLE);
         }
     }
-
 }

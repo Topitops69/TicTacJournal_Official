@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -22,6 +23,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,6 +76,13 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     //bottom nav
     private BottomNavigationView bottomNavigationView;
 
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm != null && imm.isAcceptingText()) {
+            imm.hideSoftInputFromWindow(inputSearch.getWindowToken(), 0);
+        }
+    }
 
     // Create an instance of the contract for onActivityResult
     ActivityResultLauncher<Intent> journalActivityResultLauncher = registerForActivityResult(
@@ -129,6 +139,29 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
 
        //search
         inputSearch = binding.inputSearch;
+// Find the bottom navigation view in the activity layout
+        bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
+
+        //Quote code part
+        quoteText = binding.txtQuote;
+        writerName = binding.txtName;
+        RelativeLayout relativeLayout = binding.relativeLayout;
+        btnCopy = binding.copyBtn;
+        //getters
+
+        inputSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus || !inputSearch.getText().toString().isEmpty()) {
+                    relativeLayout.setVisibility(View.GONE);
+                } else {
+
+                    relativeLayout.setVisibility(View.VISIBLE);
+                    hideKeyboard();
+                    inputSearch.clearFocus(); // Add this line to remove focus
+                }
+            }
+        });
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -160,26 +193,16 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                     quoteText.setVisibility(View.GONE);
                     writerName.setVisibility(View.GONE);
                     btnCopy.setVisibility(View.GONE);
-
+                    relativeLayout.setVisibility(View.GONE);
                 }
 
-//                if (journalsAdapter.getItemCount() == 0) {
-//                    Toast.makeText(requireActivity(), "Journal not found", Toast.LENGTH_SHORT).show();
-//                }
             }
         });
-        //bottom nav
 
-        // Find the bottom navigation view in the activity layout
-        bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
 
-        //Quote code part
-        quoteText = binding.txtQuote;
-        writerName = binding.txtName;
-        RelativeLayout relativeLayout = binding.relativeLayout;
-        btnCopy = binding.copyBtn;
 
         btnCopy.setOnClickListener(new View.OnClickListener() {
+
 
 
             @Override
@@ -219,14 +242,36 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             }
         });
 
+        final View rootView = binding.getRoot();
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            boolean wasOpen = false;
+
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+
+                int screenHeight = rootView.getRootView().getHeight();
+                boolean isOpen = ((double) (screenHeight - (r.bottom - r.top)) / screenHeight) > 0.25;
+
+                if (wasOpen && !isOpen) {
+                    // The keyboard was open but it's not anymore.
+                    inputSearch.clearFocus();
+                }
+
+                wasOpen = isOpen;
+            }
+        });
 
         // Return the root view of the binding object
         return binding.getRoot();
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
+
         // This will refresh the journals every time the fragment is resumed.
         getJournals(REQUEST_CODE_SHOW_JOURNALS, false);
     }
@@ -288,5 +333,10 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         writerName.setText(qList.get(currentQuotePosition).getWriter());
 
     }
+
+    public EditText getInputSearch() {
+        return inputSearch;
+    }
+
 
 }

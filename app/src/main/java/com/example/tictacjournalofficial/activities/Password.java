@@ -1,9 +1,11 @@
 package com.example.tictacjournalofficial.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 public class Password extends AppCompatActivity implements View.OnClickListener {
 
     View view_01, view_02, view_03, view_04;
-
 
     RelativeLayout setBlank;
     Button btn_01, btn_02, btn_03, btn_04, btn_05, btn_06, btn_07, btn_08, btn_09, btn_0, btnClear, btnConfirm, btnSkip, btnContinue;
@@ -42,12 +43,14 @@ public class Password extends AppCompatActivity implements View.OnClickListener 
         btnSkip = findViewById(R.id.btnSkip);
         setBlank = findViewById(R.id.blankPass);
 
-        // Check if passcode is set, if it is then hide skip and continue buttons
         if (getPassCode().length() > 0) {
             setBlank.setVisibility(View.GONE);
         }
 
-        btnSkip.setOnClickListener(view -> startActivity(new Intent(Password.this, Theme.class)));
+        btnSkip.setOnClickListener(view -> {
+            startActivity(new Intent(Password.this, Theme.class));
+            finish();
+        });
 
         btnContinue.setOnClickListener(view -> {
             if (numList.size() == 4) {
@@ -68,8 +71,6 @@ public class Password extends AppCompatActivity implements View.OnClickListener 
         TextView resetPass = findViewById(R.id.resetPass);
         resetPass.setOnClickListener(v -> resetPassCode());
     }
-
-
 
     private void initializeComponents() {
         view_01 = findViewById(R.id.view_01);
@@ -160,9 +161,17 @@ public class Password extends AppCompatActivity implements View.OnClickListener 
                         numList.clear();
                         passNumber(numList);
                     } else {
-                        matchPassCode();
+                        if (getPassCode().equals(passCode)) {
+                            Toast.makeText(this, "Passcode correct, proceeding...", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, Home.class));
+                            finish();
+                        } else {
+                            Toast.makeText(this, "Invalid Passcode. Try Again", Toast.LENGTH_SHORT).show();
+                            numList.clear();
+                            passNumber(numList);
+                        }
                     }
-                } else if (passCode.equals("reset")) { // Check if passcode is "reset"
+                } else if (passCode.equals("reset")) {
                     resetPassCode();
                     Toast.makeText(this, "Passcode Reset. Set New Passcode.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -171,21 +180,6 @@ public class Password extends AppCompatActivity implements View.OnClickListener 
                 break;
         }
 
-    }
-
-    private void confirmPassCode() {
-        if (numList.size() == 4) {
-            passCode = num1 + num2 + num3 + num4;
-            if (getPassCode().length() == 0) {
-                savePassCode(passCode);
-            } else {
-                matchPassCode();
-            }
-        } else {
-            Toast.makeText(this, "Enter 4 digit passcode", Toast.LENGTH_SHORT).show();
-            numList.clear(); // Clear the input
-            passNumber(numList); // Update the passcode dots view
-        }
     }
 
     private void passNumber(ArrayList<String> numList) {
@@ -220,35 +214,31 @@ public class Password extends AppCompatActivity implements View.OnClickListener 
         if (getPassCode().equals(passCode)) {
             Toast.makeText(this, "Passcode correct, proceeding...", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, Theme.class));
-            //finish();
+            finish();
         } else {
             Toast.makeText(this, "Invalid Passcode. Try Again", Toast.LENGTH_SHORT).show();
-            numList.clear(); // Clear the input
-            passNumber(numList); // Update the passcode dots view
+            numList.clear();
+            passNumber(numList);
         }
     }
 
-
     private void savePassCode(String passCode) {
-        SharedPreferences preferences = getSharedPreferences("Passcode pref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("passcode", passCode);
+        SharedPreferences sharedPreferences = getSharedPreferences("PassCode", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("passCode", passCode);
         editor.apply();
     }
 
     private String getPassCode() {
-        SharedPreferences preferences = getSharedPreferences("Passcode pref", Context.MODE_PRIVATE);
-        return preferences.getString("passcode", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("PassCode", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("passCode", "");
     }
 
     private void resetPassCode() {
-        SharedPreferences preferences = getSharedPreferences("Passcode pref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove("passcode");
-        editor.apply();
-        Toast.makeText(this, "Passcode Reset. Set New Passcode.", Toast.LENGTH_SHORT).show();
-        numList.clear(); // Clear the input
-        passNumber(numList); // Update the passcode dots view
+        savePassCode("");
+        numList.clear();
+        passNumber(numList);
     }
+
 
 }

@@ -23,11 +23,13 @@
     <string name="subtitle">Subtitle</string>
     <string name="scroll">scroll</string>
     <string name="type_your_journal_here">Type your journal here..</string>
-    <string name="back">back</string>
+
     <string name="addjournal1">addJournal1</string>
     <string name="addnote">addNote</string>
     <string name="addimage">addImage</string>
     <string name="addlink">addLink</string>
+    <string name="back"><![CDATA[<-]]></string>
+    <string name="forward"><![CDATA[->]]></string>
 
 
 </resources>

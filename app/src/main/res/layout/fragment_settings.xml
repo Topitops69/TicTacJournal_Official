@@ -70,7 +70,6 @@
 
         <Button
             android:id="@+id/btnEmail"
-            style="@style/SETTINGS"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -82,8 +81,11 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="Email"
-            android:visibility="gone"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            style="@style/SETTINGS"
+
+            />
+
 
         <Button
             android:id="@+id/btnTheme"
@@ -131,22 +133,37 @@
             tools:layout_editor_absoluateX="0dp"
             tools:layout_editor_absoluteY="48dp" />
 
-
-        <Switch
-            android:id="@+id/btnSwitch"
-            style="@style/SETTINGS"
+        <Button
+            android:id="@+id/btnBackup"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_backup"
+            android:drawableEnd="@drawable/ic_forward"
+            android:drawablePadding="8dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Backup and Restore"
+            android:textAlignment="viewStart"
+            style="@style/SETTINGS" />
+        <Button
+            android:id="@+id/btnNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
             android:drawableStart="@drawable/ic_notif"
+            android:drawableEnd="@drawable/ic_forward"
             android:drawablePadding="8dp"
             android:gravity="start|center_vertical"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="Set Reminder"
             android:textAlignment="viewStart"
-            android:textSize="@dimen/_13ssp"
-            />
+            style="@style/SETTINGS" />
+
 
         <Button
             android:id="@+id/btnPayment"
@@ -164,6 +181,7 @@
             android:textAlignment="viewStart"
             android:visibility="gone"
             style="@style/SETTINGS" />
+
 
 
     </LinearLayout>

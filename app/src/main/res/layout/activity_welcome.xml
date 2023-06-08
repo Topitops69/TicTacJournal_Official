@@ -9,13 +9,13 @@
     tools:context=".activities.Welcome">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:orientation="vertical"
+        android:id="@+id/linearLayout2"
         style="@style/SCREEN"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
 
 
         <TextView
@@ -32,10 +32,11 @@
             android:textSize="20sp"
             android:textStyle="bold"
 
-           />
+            />
 
         <EditText
             android:id="@+id/tfName"
+            style="@style/TEXT"
             android:layout_width="300dp"
             android:layout_height="58dp"
             android:layout_marginStart="20dp"
@@ -43,15 +44,12 @@
             android:backgroundTint="#FFF"
             android:drawableStart="@drawable/baseline_account_circle_24"
             android:ems="10"
-            style="@style/TEXT"
             android:hint="Enter your name"
             android:inputType="textPersonName"
             android:text=""
             android:textColorHint="#9F9F9F"
             tools:layout_editor_absoluteX="99dp"
             tools:layout_editor_absoluteY="819dp" />
-
-
 
     </LinearLayout>
 
@@ -81,9 +79,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/tfRestore"
+        style="@style/TEXT"
+        android:layout_width="350dp"
+        android:layout_height="69dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="169dp"
+        android:layout_marginEnd="45dp"
+        android:fontFamily="@font/ubuntu_regular"
+        android:hint="Log in and Restore"
+
+        android:textAlignment="center"
+        android:textSize="@dimen/_14ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
 
-<!--      style="@style/SCREEN"-->
+    </TextView>
+
+
+    <!--      style="@style/SCREEN"-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tictacjournalofficial.Firebase.LoginAndRestore;
 import com.example.tictacjournalofficial.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +21,10 @@ public class MainActivity extends AppCompatActivity {
 
         button = findViewById(R.id.button);
 
-        button.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, Welcome.class)));
+        button.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, Welcome.class));
+            finish();
+        });
 
         TextView textView;
 
@@ -28,13 +32,11 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(view -> {
             Intent intent1 = new Intent(MainActivity.this, LoginAndRestore.class);
             startActivity(intent1);
+            finish();
 
             Toast.makeText(MainActivity.this, "Login and restore", Toast.LENGTH_LONG).show();
         });
-
-//
     }
-
 
 
 }

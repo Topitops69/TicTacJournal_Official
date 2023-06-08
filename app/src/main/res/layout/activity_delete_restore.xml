@@ -48,7 +48,7 @@
             tools:layout_editor_absoluteY="48dp" />
 
         <Button
-            android:id="@+id/btnName"
+            android:id="@+id/btnSync"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -67,7 +67,24 @@
             />
 
 
+        <Button
+            android:id="@+id/btnRestore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/ic_sync"
+            android:drawableEnd="@drawable/ic_forward"
+            android:drawablePadding="8dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Restore Data"
+            style="@style/TEXT"
+            android:textAlignment="viewStart"
+            android:textColor="#FFF"
 
+            />
 
 
         <TextView

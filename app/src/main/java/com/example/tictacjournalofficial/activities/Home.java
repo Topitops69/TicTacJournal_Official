@@ -1,9 +1,11 @@
 package com.example.tictacjournalofficial.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,6 +25,9 @@ public class Home extends AppCompatActivity {
 
     public static int REQUEST_CODE_ADD_JOURNAL_NOTE = 1;
     ActivityHomeBinding binding;
+    //fragments
+    private Journal1Fragment currentFragment;
+
 
     //practise
     @Override
@@ -62,13 +67,38 @@ public class Home extends AppCompatActivity {
 
         ));
 
+
     }
 
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout_home, fragment);
         fragmentTransaction.commit();
+
+        if (fragment instanceof Journal1Fragment) {
+            currentFragment = (Journal1Fragment) fragment;
+        } else {
+            currentFragment = null;
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragment != null && currentFragment.getInputSearch().hasFocus()) {
+            currentFragment.getInputSearch().clearFocus();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("Go back?")
+                    .setMessage("Are you sure you want to go back? Any unsaved changes will be lost.")
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            Home.super.onBackPressed();
+                        }
+                    }).create().show();
+        }
     }
 
 }

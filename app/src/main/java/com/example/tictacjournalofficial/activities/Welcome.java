@@ -4,13 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.tictacjournalofficial.R;
+import com.example.tictacjournalofficial.Firebase.LoginAndRestore;
 
 public class Welcome extends AppCompatActivity {
 
     Button btnContinue, btnSkip;
+    TextView tfRestore;
 
 
     @Override
@@ -23,10 +27,32 @@ public class Welcome extends AppCompatActivity {
 
         btnContinue = findViewById(R.id.btnContinue);
         btnSkip = findViewById(R.id.btnSkip);
+        tfRestore = findViewById(R.id.tfRestore);
 
-        btnSkip.setOnClickListener(View-> startActivity(new Intent(Welcome.this, Password.class)));
+        btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Welcome.this, Password.class));
+                finish();
+            }
+        });
 
-        btnContinue.setOnClickListener(view-> startActivity(new Intent(Welcome.this, Password.class)));
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Welcome.this, Password.class));
+                finish();
+            }
+        });
+
+        tfRestore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Welcome.this, LoginAndRestore.class));
+            }
+        });
 
     }
+
+
 }
