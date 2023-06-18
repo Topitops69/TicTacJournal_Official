@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "144429924465",
+    "project_id": "tictacjournal-official-46f9b",
+    "storage_bucket": "tictacjournal-official-46f9b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144429924465:android:4e243264f29167ba085bd0",
+        "android_client_info": {
+          "package_name": "com.example.tictacjournalofficial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144429924465-pa0pdjvbup6qf2fsba536ao80p0hm5vn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSrmGzMujOYXIsVtFZvKyIjIVh9X_w4vU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144429924465-pa0pdjvbup6qf2fsba536ao80p0hm5vn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

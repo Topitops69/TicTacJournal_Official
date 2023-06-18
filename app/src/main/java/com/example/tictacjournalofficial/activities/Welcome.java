@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.tictacjournalofficial.R;
-import com.example.tictacjournalofficial.Firebase.LoginAndRestore;
+import com.example.tictacjournalofficial.Firebase.CreateAccount;
 
 public class Welcome extends AppCompatActivity {
 
@@ -48,7 +48,7 @@ public class Welcome extends AppCompatActivity {
         tfRestore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Welcome.this, LoginAndRestore.class));
+                startActivity(new Intent(Welcome.this, CreateAccount.class));
             }
         });
 

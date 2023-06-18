@@ -19,7 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.tictacjournalofficial.Firebase.LoginAndRestore;
+import com.example.tictacjournalofficial.Firebase.CreateAccount;
 import com.example.tictacjournalofficial.activities.NotificationActivity;
 import com.example.tictacjournalofficial.activities.Password;
 import com.example.tictacjournalofficial.activities.Theme;
@@ -148,7 +148,7 @@ public class SettingsFragment extends Fragment {
         btnEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginAndRestore.class);
+                Intent intent = new Intent(getActivity(), CreateAccount.class);
                 startActivity(intent);
             }
         });

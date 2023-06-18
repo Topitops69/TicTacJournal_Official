@@ -35,11 +35,16 @@ import android.widget.Toast;
 
 import android.Manifest;
 
+import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
 import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.quotes.QuotesList;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.ktx.Firebase;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -240,7 +245,33 @@ public class addJournal extends AppCompatActivity {
 
         new SaveJournalTask().execute();
 
+        saveJournalToFirebase(journal);
+
     }
+
+    //Save Journal to firebase
+    void saveJournalToFirebase(Journal journal){
+        DocumentReference documentReference;
+        documentReference = Utility.getCollectionReferenceForJournals().document();
+
+        documentReference.set(journal).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Utility.showToast(addJournal.this, "Journal added successfully");
+                }else{
+                    Utility.showToast(addJournal.this, "Failed while adding journal");
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
 
     //Color part code
     private void initMiscellaneous(){

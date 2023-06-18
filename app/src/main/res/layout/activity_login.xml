@@ -11,11 +11,26 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="480dp"
+        android:layout_height="700dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/textCreate"
+            style="@style/TEXT"
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="201dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="sans-serif"
+            android:text="Login:"
+            android:textColor="#FFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
 
+            />
 
         <TextView
             android:id="@+id/textView2"
@@ -23,7 +38,7 @@
             android:layout_width="268dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="30dp"
             android:layout_marginEnd="201dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="sans-serif"
@@ -35,7 +50,8 @@
             />
 
         <EditText
-            android:id="@+id/tfName"
+            android:id="@+id/tfEmail"
+            style="@style/TEXT"
             android:layout_width="320dp"
             android:layout_height="58dp"
             android:layout_marginStart="20dp"
@@ -68,69 +84,88 @@
             />
 
         <EditText
-            android:id="@+id/tfPass"
+            android:id="@+id/tfPassword"
+            style="@style/TEXT"
             android:layout_width="320dp"
-            android:layout_height="58dp"
+            android:layout_height="69dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="0dp"
+            android:layout_marginBottom="30dp"
             android:backgroundTint="#FFF"
             android:drawableStart="@drawable/ic_lock"
             android:ems="10"
-            android:hint="Please enter your password"
-            android:inputType="textPersonName"
+            android:hint="Please re-enter your password"
+            android:inputType="textPassword"
             android:text=""
             android:textColorHint="#9F9F9F"
             tools:layout_editor_absoluteX="99dp"
             tools:layout_editor_absoluteY="819dp" />
 
+
+
+
+        <Button
+            android:id="@+id/btnLogin"
+            style="@style/BUTTON"
+            android:layout_width="321dp"
+            android:layout_height="49dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="0dp"
+            android:text="Login "
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="64dp"
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
+            />
+
         <LinearLayout
-            android:layout_width="400dp"
-            android:layout_height="146dp"
-            android:layout_marginTop="0dp"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
 
-            <Button
-                android:id="@+id/btnSign"
-                style="@style/BUTTON"
-                android:layout_width="136dp"
-                android:layout_height="49dp"
-                android:layout_marginStart="20dp"
+            <TextView
+                android:id="@+id/LoginText"
+                style="@style/TEXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginBottom="340dp"
-                android:text="Sign Up"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:fontFamily="sans-serif"
+                android:text="Don't have an account? "
+                android:textColor="#C1C0C0"
+                android:textSize="17sp"
 
-            <Button
-                android:id="@+id/btnLogin"
-                style="@style/BUTTON"
-                android:layout_width="136dp"
-                android:layout_height="49dp"
-                android:layout_marginStart="4dp"
+                />
+
+            <TextView
+                android:id="@+id/tfRegister"
+                style="@style/TEXT"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="120dp"
-                android:text="Login"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:fontFamily="sans-serif"
+                android:text="Register"
+                android:textColor="#C1C0C0"
+                android:textSize="17sp"
+                android:textStyle="bold"
+
+                />
         </LinearLayout>
+
+
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnBackup"
-        style="@style/BUTTON"
-        android:layout_width="213dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="64dp"
-        android:text="Backup and Restore"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
     <!--  style="@style/SCREEN"-->
 
 

@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tictacjournalofficial.Firebase.LoginAndRestore;
+import com.example.tictacjournalofficial.Firebase.CreateAccount;
+import com.example.tictacjournalofficial.Firebase.Login;
 import com.example.tictacjournalofficial.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.textView);
         textView.setOnClickListener(view -> {
-            Intent intent1 = new Intent(MainActivity.this, LoginAndRestore.class);
+            Intent intent1 = new Intent(MainActivity.this, CreateAccount.class);
             startActivity(intent1);
             finish();
 

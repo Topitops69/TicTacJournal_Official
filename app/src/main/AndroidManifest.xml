@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package ="com.example.tictacjournalofficial"
-    >
-<!--    //package="com.dk.stripepaymentgateway"-->
-
-
-
+    package="com.example.tictacjournalofficial">
+    <!-- //package="com.dk.stripepaymentgateway" -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".MyApplication"
+        android:name=".activities.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -25,11 +21,14 @@
         tools:targetAPI="q"
         tools:targetApi="31">
         <activity
-            android:name=".activities.NotificationActivity"
+            android:name=".SplashActivity"
             android:exported="false" />
         <activity
-            android:name=".Firebase.Delete_Restore"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".Firebase.Login"
+            android:exported="false"
+            android:theme="@style/Theme.TicTacJournal" />
+        <activity
+            android:name=".activities.NotificationActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ResultDialog"
@@ -61,10 +60,9 @@
             android:parentActivityName=".activities.Welcome"
             android:theme="@style/Theme.TicTacJournal" />
         <activity
-            android:name=".Firebase.LoginAndRestore"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".Firebase.CreateAccount"
             android:exported="false"
-           />
+            android:theme="@style/Theme.TicTacJournal" />
         <activity
             android:name=".activities.Welcome"
             android:parentActivityName=".activities.MainActivity"
