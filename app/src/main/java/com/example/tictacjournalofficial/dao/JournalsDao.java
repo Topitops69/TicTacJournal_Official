@@ -23,6 +23,8 @@ public interface JournalsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertJournal(Journal journal);
 
+    @Query("SELECT * FROM journals WHERE title LIKE :searchQuery OR subtitle LIKE :searchQuery OR journal_text LIKE :searchQuery")
+    List<Journal> searchJournals(String searchQuery);
 
     @Delete
     void deleteJournal(Journal journal);

@@ -34,15 +34,15 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
 
     private JournalsListeners journalsListeners;
     private Timer timer;
-    private List<Journal> journalsSource;
+    private static List<Journal> journalsSource;
 
-    public void filterList(List<Journal> newList){
+    public static void filterList(List<Journal> newList){
         journalsSource = newList;
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
 
     }
 
-    public List<Journal> getList(){
+    public static List<Journal> getList(){
         return journalsSource;
     }
 

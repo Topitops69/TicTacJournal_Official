@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.example.tictacjournalofficial.Firebase.CreateAccount;
 import com.example.tictacjournalofficial.Firebase.Login;
 import com.example.tictacjournalofficial.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 public class MainActivity extends AppCompatActivity {
     Button button;
@@ -20,6 +22,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Enable offline data persistence
+        db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build());
 
         button = findViewById(R.id.button);
 
@@ -39,6 +48,4 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Login and restore", Toast.LENGTH_LONG).show();
         });
     }
-
-
 }

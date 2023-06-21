@@ -1,5 +1,7 @@
 package com.example.tictacjournalofficial.fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,25 +26,43 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.algolia.search.DefaultSearchClient;
+import com.algolia.search.SearchClient;
+import com.algolia.search.SearchIndex;
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.Index;
 import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.activities.addJournal;
 import com.example.tictacjournalofficial.adapters.JournalsAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
 import com.example.tictacjournalofficial.databinding.FragmentJournal1Binding;
+import com.example.tictacjournalofficial.entities.ColorCount;
 import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.example.tictacjournalofficial.quotes.QuotesData;
 import com.example.tictacjournalofficial.quotes.QuotesList;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Journal1Fragment extends Fragment implements JournalsListeners {
@@ -116,6 +137,47 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        SearchClient client =
+                DefaultSearchClient.create("2HDEDMVLHZ", "YourWriteAPIKey");
+
+        SearchIndex index = client.initIndex("journals");
+
+        List<Journal> journals = fetchDataFromDataBase();
+
+        index.saveObjects(journals);
+
+        // Initialize Algolia
+//        Client client = new Client("YourApplicationID", "YourSearchOnlyAPIKey");
+//        Index index = client.getIndex("journals");
+//        // Get an instance of Firestore
+//        FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+//
+//        List <JSONObject> productList =new ArrayList<>();
+//        // Assuming "my_journals" is the collection group ID
+//        firestoreDB.collectionGroup("my_journals")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//
+//
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//
+//                                productList.add(new JSONObject(document.getData()));
+//                                index.addObjectsAsync(new JSONArray(productList), null);
+//                            }
+//
+//
+//                        } else {
+//                            Log.d(TAG, "Error getting documents: ", task.getException());
+//                        }
+//                    }
+//                });
+
+
+
+
 
 
         // Inflate the layout for this fragment through the binding object
@@ -127,6 +189,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         com.google.firebase.firestore.Query query = Utility.getCollectionReferenceForJournals().orderBy("dateTime", com.google.firebase.firestore.Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Journal> options = new FirestoreRecyclerOptions.Builder<Journal>()
                 .setQuery(query, Journal.class).build();
+
 
         // Your bindings...
         journalsAdapter = new JournalsAdapter(options, this);
@@ -141,7 +204,6 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         journalsRecycleView.setAdapter(journalsAdapter);
 
         getJournals(REQUEST_CODE_SHOW_JOURNALS, false);
-
 
         //search
         inputSearch = binding.inputSearch;
@@ -174,25 +236,39 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().isEmpty()) {
-                    // Get all journals when the search query is empty
-                    resetRecyclerViewWithNewQuery(
-                            Utility.getCollectionReferenceForJournals().orderBy("dateTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                    );
+                String searchString = s.toString();
+                if (!searchString.isEmpty()) {
+                    String searchQuery = "%" + searchString + "%";
+                    // Run the query on a background thread
+                    new Thread(() -> {
+                        List<Journal> results = JournalsDatabase.getDatabase(requireActivity()).journalDao().searchJournals(searchQuery);
+                        // Do something with the results...
+                        // Be aware that this code runs on a background thread
+                        // If you want to update the UI, you need to use runOnUiThread() or a similar method
+                        requireActivity().runOnUiThread(() -> {
+                            // Update your UI here...
+                            // For example, if you have a RecyclerView for displaying search results, you could update its adapter here
+                            journalList.clear();
+                            journalList.addAll(results);
+                            journalsAdapter.notifyDataSetChanged();
+                        });
+                    }).start();
                 } else {
-                    // Otherwise, filter journals by the search query.
-                    // For example, here we query journals whose "title" field contains the search query.
-                    resetRecyclerViewWithNewQuery(
-                            Utility.getCollectionReferenceForJournals().whereArrayContains("title", s.toString()).orderBy("dateTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                    );
+                    // Get all journals when the search query is empty
+                    getJournals(REQUEST_CODE_SHOW_JOURNALS, false);
                 }
             }
+
 
             @Override
             public void afterTextChanged(Editable s) {
                 String text = s.toString();
-                filter(text);
-
+                if(text.length()>0){
+                    filter(text);
+                }
+                else{
+                        journalsAdapter.filterList(journalList);
+                }
             }
         });
 
@@ -225,8 +301,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             @Override
             public void onClick(View v) {
                 // your code here
-               // Toast.makeText(getContext(), "LinearLayout clicked", Toast.LENGTH_SHORT).show();
-                //next quote, increment
+
                 currentQuotePosition++;
 
                 //check if more quotes are available in the list else only the first quote
@@ -263,9 +338,23 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         return binding.getRoot();
     }
 
-    private void filter(String text) {
-//       List<Journal> adapterList = JournalsAdapter.getList();
+    private List<Journal> fetchDataFromDataBase() {
+        List<Journal> journals = new ArrayList<>();// Fetch data from your database
+        return journals;
+    }
 
+
+
+    private void filter(String text) {
+     List<Journal> adapterList = JournalsAdapter.getList();
+        List<Journal> journalModelList = new ArrayList<>();
+        for(int i = 0; i< adapterList.size();i++){
+            Journal journals = adapterList.get(i);
+            if(journals.getTitle().toLowerCase().contains(text.toLowerCase()) || journals.getNoteText().toLowerCase().contains(text)){
+                journalModelList.add(journals);
+            }
+        }
+        JournalsAdapter.filterList(journalModelList);
 
     }
 
@@ -273,6 +362,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         FirestoreRecyclerOptions<Journal> newOptions = new FirestoreRecyclerOptions.Builder<Journal>()
                 .setQuery(newQuery, Journal.class)
                 .build();
+
 
         // Stop listening to the previous query
         journalsAdapter.stopListening();
@@ -293,12 +383,14 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
 
     private void getJournals(final int requestCode, final boolean isJournalDeleted) {
 
+
         @SuppressLint("StaticFieldLeak")
         class GetJournalsTask extends AsyncTask<Void, Void, List<Journal>> {
 
             @Override
             protected List<Journal> doInBackground(Void... voids) {
                 return JournalsDatabase.getDatabase(requireActivity()).journalDao().getAllJournals();
+
             }
 
             @Override
@@ -367,5 +459,9 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             journalsAdapter.stopListening();
         }
     }
+
+
+
+
 
 }

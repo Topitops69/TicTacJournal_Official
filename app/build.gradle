@@ -108,4 +108,9 @@ dependencies {
 
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+
+    //algolia
+    implementation 'com.algolia:algoliasearch-android:3.+'
+    implementation 'com.algolia:algoliasearch-core:3.16.5'
+    implementation 'com.algolia:algoliasearch-java-net:3.16.5'
 }
