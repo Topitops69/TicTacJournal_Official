@@ -1,11 +1,20 @@
 package com.example.tictacjournalofficial.entities;
 
 public class ColorCount {
+
     private String color;
-    private int count;
+    private Integer count;
 
-    // Getters and setters...
+    // default constructor
+    public ColorCount() {
+    }
+    // Constructor
+    public ColorCount(String color, Integer count) {
+        this.color = color;
+        this.count = count;
+    }
 
+    // Getter and setter methods
     public String getColor() {
         return color;
     }
@@ -14,11 +23,12 @@ public class ColorCount {
         this.color = color;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 }
+

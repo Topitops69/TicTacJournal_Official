@@ -1,7 +1,5 @@
 package com.example.tictacjournalofficial.fragments;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,14 +8,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -27,20 +17,27 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.activities.addJournal;
 import com.example.tictacjournalofficial.adapters.JournalsAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
-import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.databinding.FragmentJournal1Binding;
+import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.example.tictacjournalofficial.quotes.QuotesData;
 import com.example.tictacjournalofficial.quotes.QuotesList;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -103,6 +100,8 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             });
 
 
+
+    //
     @Override
     public void onJournalClicked(Journal journal, int position) {
         journalClickedPosition = position;
@@ -112,6 +111,8 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         journalActivityResultLauncher.launch(intent);
     }
 
+    //Firebase reference:
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -120,24 +121,29 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         // Inflate the layout for this fragment through the binding object
         FragmentJournal1Binding binding = FragmentJournal1Binding.inflate(inflater, container, false);
 
-        journalsRecycleView = binding.journalsRecyclerView;
-        // Assign the bottom navigation view from the binding
+        journalsRecycleView = binding.journalsRecyclerView ;
 
+        // Your query
+        com.google.firebase.firestore.Query query = Utility.getCollectionReferenceForJournals().orderBy("dateTime", com.google.firebase.firestore.Query.Direction.DESCENDING);
+        FirestoreRecyclerOptions<Journal> options = new FirestoreRecyclerOptions.Builder<Journal>()
+                .setQuery(query, Journal.class).build();
+
+        // Your bindings...
+        journalsAdapter = new JournalsAdapter(options, this);
+        journalsRecycleView.setAdapter(journalsAdapter);
 
         journalsRecycleView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
         );
 
         journalList = new ArrayList<>();
-        journalsAdapter = new JournalsAdapter(journalList, this);
+        journalsAdapter = new JournalsAdapter(options, this);
         journalsRecycleView.setAdapter(journalsAdapter);
-
-
 
         getJournals(REQUEST_CODE_SHOW_JOURNALS, false);
 
-       //search
+
+        //search
         inputSearch = binding.inputSearch;
 // Find the bottom navigation view in the activity layout
         bottomNavigationView = requireActivity().findViewById(R.id.bottomNavigationView);
@@ -164,41 +170,31 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         });
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                journalsAdapter.cancelTimer();
+                if (s.toString().isEmpty()) {
+                    // Get all journals when the search query is empty
+                    resetRecyclerViewWithNewQuery(
+                            Utility.getCollectionReferenceForJournals().orderBy("dateTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    );
+                } else {
+                    // Otherwise, filter journals by the search query.
+                    // For example, here we query journals whose "title" field contains the search query.
+                    resetRecyclerViewWithNewQuery(
+                            Utility.getCollectionReferenceForJournals().whereArrayContains("title", s.toString()).orderBy("dateTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    );
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(journalList.size() != 0){
-                    journalsAdapter.searchJournals(s.toString());
-                }
-
-                // Toggle the visibility of the bottom navigation view
-                if (s.toString().isEmpty()) {
-                    // Display the quote viewer
-                    bottomNavigationView.setVisibility(View.VISIBLE); // Show the bottom navigation view
-                    quoteText.setVisibility(View.VISIBLE);
-                    writerName.setVisibility(View.VISIBLE);
-                    btnCopy.setVisibility(View.VISIBLE);
-
-                } else {
-                    bottomNavigationView.setVisibility(View.GONE); // Hide the bottom navigation view
-                    // Hide the quote viewer
-                    quoteText.setVisibility(View.GONE);
-                    writerName.setVisibility(View.GONE);
-                    btnCopy.setVisibility(View.GONE);
-                    relativeLayout.setVisibility(View.GONE);
-                }
+                String text = s.toString();
+                filter(text);
 
             }
         });
-
 
 
         btnCopy.setOnClickListener(new View.OnClickListener() {
@@ -267,7 +263,26 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         return binding.getRoot();
     }
 
+    private void filter(String text) {
+//       List<Journal> adapterList = JournalsAdapter.getList();
 
+
+    }
+
+    private void resetRecyclerViewWithNewQuery(com.google.firebase.firestore.Query newQuery) {
+        FirestoreRecyclerOptions<Journal> newOptions = new FirestoreRecyclerOptions.Builder<Journal>()
+                .setQuery(newQuery, Journal.class)
+                .build();
+
+        // Stop listening to the previous query
+        journalsAdapter.stopListening();
+
+        // Supply the new options to the adapter
+        journalsAdapter.updateOptions(newOptions);
+
+        // Start listening to the new query
+        journalsAdapter.startListening();
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -338,5 +353,19 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         return inputSearch;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        journalsAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (journalsAdapter != null) {
+            journalsAdapter.stopListening();
+        }
+    }
 
 }

@@ -1,8 +1,11 @@
 package com.example.tictacjournalofficial.fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.calendar.CalendarAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
@@ -28,6 +32,11 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.YearMonth;
@@ -36,6 +45,8 @@ import org.threeten.bp.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class InsightFragment extends Fragment implements CalendarAdapter.OnItemListener {
 
@@ -78,6 +89,44 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        // Get an instance of Firestore
+        FirebaseFirestore firestoreDB = FirebaseFirestore.getInstance();
+
+        // Assuming "my_journals" is the collection group ID
+                firestoreDB.collectionGroup("my_journals")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    HashMap<String, Integer> colorCountMap = new HashMap<>();
+
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String color = document.getString("color");
+                                        if (color != null) {
+                                            Integer count = colorCountMap.get(color);
+                                            if (count == null) {
+                                                count = 0;
+                                            }
+                                            colorCountMap.put(color, count + 1);
+                                        }
+                                    }
+
+                                    List<ColorCount> colorCounts = new ArrayList<>();
+                                    for (Map.Entry<String, Integer> entry : colorCountMap.entrySet()) {
+                                        colorCounts.add(new ColorCount(entry.getKey(), entry.getValue()));
+                                    }
+                                    loadMoodData(colorCounts);
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
+
+
+
         //customize the pie chart
         chart = view.findViewById(R.id.moodChart);
         Legend legend = chart.getLegend();
@@ -99,6 +148,8 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
                 loadMoodData(colorCounts);
             }
         });
+
+
     }
 
     private void loadMoodData(List<ColorCount> colorCounts) {
@@ -109,7 +160,14 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
 
         // Pass the mood data to the setupChart() method
         setupChart(colorCountMap);
+        Log.d(TAG, "Color Count Map: " + colorCountMap.toString());
+        //debug
+        Log.d(TAG, "Color Counts: " + colorCounts.toString());  // Log colorCounts directly
+
+
+
     }
+
 
     private void setupChart(HashMap<String, Integer> colorCount) {
         ArrayList<PieEntry> entries = new ArrayList<>();
@@ -121,6 +179,8 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
             Integer count = entry.getValue();
 
             String label = getLabelFromColorCode(colorCode);
+            //debug
+            Log.d(TAG, "Color Code: " + colorCode + ", Label: " + label);
 
             entries.add(new PieEntry(count, label));
             colors.add(Color.parseColor(colorCode));
@@ -141,7 +201,13 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
         //chart.setDrawHoleEnabled(true); // This line is not necessary if the hole is already enabled
         chart.setHoleRadius(20f); // Set the hole radius to 20% of the chart's radius
         chart.invalidate();
-        chart.animate();
+       // chart.animate();
+
+
+
+        Log.d(TAG, "Entries: " + entries.toString());
+        Log.d(TAG, "Colors: " + colors.toString());
+
     }
 
     private String getLabelFromColorCode(String colorCode) {

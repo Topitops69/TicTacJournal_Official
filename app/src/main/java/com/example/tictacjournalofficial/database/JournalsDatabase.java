@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.tictacjournalofficial.dao.JournalsDao;
 import com.example.tictacjournalofficial.entities.Journal;
 
-@Database(entities = Journal.class, version = 1, exportSchema = false)
+@Database(entities = Journal.class, version = 2, exportSchema = false)
 public abstract class JournalsDatabase extends RoomDatabase {
     private static JournalsDatabase journalsDatabase;
 
@@ -17,7 +17,8 @@ public abstract class JournalsDatabase extends RoomDatabase {
         if(journalsDatabase == null){
             journalsDatabase = Room.databaseBuilder(
                     context, JournalsDatabase.class,"journals_db"
-            ).build();
+            ).fallbackToDestructiveMigration()
+                    .build();
         }
         return journalsDatabase;
     }

@@ -78,10 +78,24 @@ public class addJournal extends AppCompatActivity {
     //alert
     private AlertDialog dialogDeleteJournal;
 
+    private Journal journal = new Journal();
+
+    private DocumentReference documentReference;
+
+    boolean editMode = false;
+    String docId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_journal);
+
+        docId = getIntent().getStringExtra("docId");
+
+        if(docId!= null && docId.isEmpty()){
+            editMode = true;
+        }
+
 
         // Initialize the requestPermissionLauncher
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -142,15 +156,12 @@ public class addJournal extends AppCompatActivity {
             boolean isViewOrUpdate = intent.getBooleanExtra("isViewOrUpdate", false);
             if (isViewOrUpdate) {
                 alreadyAvailableJournal = (Journal) intent.getSerializableExtra("journal");
-                // Set the journal details in the EditText fields
-                inputJournalTitle.setText(alreadyAvailableJournal.getTitle());
-                inputJournalSubtitle.setText(alreadyAvailableJournal.getSubtitle());
-                inputJournalText.setText(alreadyAvailableJournal.getNoteText());
-                textDateTime.setText(alreadyAvailableJournal.getDateTime());
-
                 setViewOrUpdateJournal();
             }
-        }
+            Log.d("Debug", "isViewOrUpdate: " + isViewOrUpdate);
+            Log.d("Debug", "alreadyAvailableJournal: " + alreadyAvailableJournal);
+        } // Don't set alreadyAvailableJournal to null here.
+
 
         findViewById(R.id.removeImage).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +179,8 @@ public class addJournal extends AppCompatActivity {
     }
 
     private void setViewOrUpdateJournal() {
+        // Removed the initialization here.
+
         if (alreadyAvailableJournal != null) {
             inputJournalTitle.setText(alreadyAvailableJournal.getTitle());
             inputJournalSubtitle.setText(alreadyAvailableJournal.getSubtitle());
@@ -192,26 +205,37 @@ public class addJournal extends AppCompatActivity {
             if (alreadyAvailableJournal.getColor() != null && !alreadyAvailableJournal.getColor().trim().isEmpty()) {
                 selectedJournalColor = alreadyAvailableJournal.getColor();
             }
+
+            // Your other code...
         }
     }
 
 
 
 
-    private void saveJournal(){
-        if(inputJournalTitle.getText().toString().trim().isEmpty()){
+
+    private void saveJournal() {
+        if (inputJournalTitle.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Hey care to add a title?", Toast.LENGTH_SHORT).show();
             return;
-        }
-        else if (inputJournalSubtitle.getText().toString().trim().isEmpty()
-                && inputJournalText.getText().toString().trim().isEmpty()){
+        } else if (inputJournalSubtitle.getText().toString().trim().isEmpty()
+                && inputJournalText.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Hey, your secret is safe with me. Let's try that again ok?", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        final Journal journal = new Journal();
+        final Journal journal;
 
-        //setters
+        if (alreadyAvailableJournal != null) {
+            // Updating an existing journal.
+            journal = alreadyAvailableJournal;
+        } else {
+            // Creating a new journal.
+            journal = new Journal();
+            DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document();
+            journal.setFirestoreId(documentReference.getId());
+        }
+
         journal.setTitle(inputJournalTitle.getText().toString());
         journal.setSubtitle(inputJournalSubtitle.getText().toString());
         journal.setNoteText(inputJournalText.getText().toString());
@@ -219,48 +243,54 @@ public class addJournal extends AppCompatActivity {
         journal.setColor(selectedJournalColor);
         journal.setImagePath(selectedImagePath);
 
-        //setting an id of new journal from an already available journal.
-        if(alreadyAvailableJournal != null){
-            journal.setId(alreadyAvailableJournal.getId());
+        if (editMode) {
+            // If you're in edit mode, update the existing journal.
+            updateJournalToFirebase(journal);
+        } else {
+            // If you're not in edit mode, add a new journal.
+            addJournalToFirebase(journal);
         }
-        @SuppressLint("StaticFieldLeak")
-        class SaveJournalTask extends AsyncTask<Void, Void, Void> {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                JournalsDatabase.getDatabase(getApplicationContext()).journalDao().insertJournal(journal);
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid){
-                super.onPostExecute(aVoid);
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
-
-            }
-        }
-
-        new SaveJournalTask().execute();
-
-        saveJournalToFirebase(journal);
-
     }
 
-    //Save Journal to firebase
-    void saveJournalToFirebase(Journal journal){
-        DocumentReference documentReference;
-        documentReference = Utility.getCollectionReferenceForJournals().document();
+    void updateJournalToFirebase(Journal journal) {
+        DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document(journal.getFirestoreId());
 
         documentReference.set(journal).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Utility.showToast(addJournal.this, "Journal added successfully");
-                }else{
-                    Utility.showToast(addJournal.this, "Failed while adding journal");
+                if (task.isSuccessful()) {
+                    Utility.showToast(addJournal.this, "Journal updated successfully");
+                    Log.d("Debug", "Firestore operation: Success");
+
+                    // Here, 1 is the request code that you'll check in Journal1Fragment
+                    Intent resultIntent = new Intent();
+                    setResult(1, resultIntent);
+                    finish(); // close this activity
+                } else {
+                    Utility.showToast(addJournal.this, "Failed while updating journal");
+                    Log.d("Debug", "Firestore operation: Failure");
+                }
+            }
+        });
+    }
+
+    void addJournalToFirebase(Journal journal) {
+        DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document(journal.getFirestoreId());
+
+        documentReference.set(journal).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Utility.showToast(addJournal.this, "Journal saved successfully");
+                    Log.d("Debug", "Firestore operation: Success");
+
+                    // Here, 1 is the request code that you'll check in Journal1Fragment
+                    Intent resultIntent = new Intent();
+                    setResult(1, resultIntent);
+                    finish(); // close this activity
+                } else {
+                    Utility.showToast(addJournal.this, "Failed while saving journal");
+                    Log.d("Debug", "Firestore operation: Failure");
                 }
             }
         });
@@ -268,9 +298,80 @@ public class addJournal extends AppCompatActivity {
 
 
 
+    //Save Journal to firebase
+    // Save Journal to Firebase
+    void saveJournalToFirebase(Journal journal){
+        DocumentReference documentReference;
 
+        if(editMode){
+            documentReference = Utility.getCollectionReferenceForJournals().document(docId);
+        }
+        else{
+            documentReference = Utility.getCollectionReferenceForJournals().document();
+        }
 
+        documentReference.set(journal).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Utility.showToast(addJournal.this, "Journal saved successfully");
+                    Log.d("Debug", "Firestore operation: Success");
+                } else {
+                    Utility.showToast(addJournal.this, "Failed while saving journal");
+                    Log.d("Debug", "Firestore operation: Failure");
+                }
+            }
+        });
+    }
 
+    private void showDeleteJournalDialog(){
+        if(dialogDeleteJournal == null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(addJournal.this);
+            View view = LayoutInflater.from(this).inflate(
+                    R.layout.layout_delete_journal,
+                    (ViewGroup) findViewById(R.id.layoutDeleteJournalContainer)
+            );
+            builder.setView(view);
+            dialogDeleteJournal = builder.create();
+            if(dialogDeleteJournal.getWindow() != null){
+                dialogDeleteJournal.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            }
+            view.findViewById(R.id.textDeleteJournal).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Delete the journal from Firebase
+                    DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document(alreadyAvailableJournal.getFirestoreId());
+
+                    documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Utility.showToast(addJournal.this, "Journal deleted successfully");
+                                Log.d("Debug", "Firestore operation: Success");
+
+                                // If delete is successful, finish this activity and pass the result back to previous activity
+                                Intent resultIntent = new Intent();
+                                setResult(1, resultIntent);
+                                finish();
+                            } else {
+                                Utility.showToast(addJournal.this, "Failed while deleting journal");
+                                Log.d("Debug", "Firestore operation: Failure");
+                            }
+                        }
+                    });
+                }
+            });
+
+            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogDeleteJournal.dismiss();
+                }
+            });
+        }
+
+        dialogDeleteJournal.show();
+    }
 
 
     //Color part code
@@ -415,53 +516,7 @@ public class addJournal extends AppCompatActivity {
 
     }
 
-    private void showDeleteJournalDialog(){
-        if(dialogDeleteJournal == null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(addJournal.this);
-            View view = LayoutInflater.from(this).inflate(
-                    R.layout.layout_delete_journal,
-                    (ViewGroup) findViewById(R.id.layoutDeleteJournalContainer)
-            );
-            builder.setView(view);
-            dialogDeleteJournal = builder.create();
-            if(dialogDeleteJournal.getWindow() != null){
-                dialogDeleteJournal.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            }
-            view.findViewById(R.id.textDeleteJournal).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    @SuppressLint("StaticFieldLeak")
-                    class DeleteJournalTask extends AsyncTask<Void, Void, Void>{
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-                            JournalsDatabase.getDatabase(getApplicationContext()).journalDao()
-                                    .deleteJournal(alreadyAvailableJournal);
-                            return null;
-                        }
 
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                            Intent intent = new Intent();
-                            intent.putExtra("isNoteDeleted", true);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-                    }
-                    new DeleteJournalTask().execute();
-                }
-            });
-
-            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogDeleteJournal.dismiss();
-                }
-            });
-        }
-
-        dialogDeleteJournal.show();
-    }
 
     private void setSubtitleIndicatorColor(){
         GradientDrawable gradientDrawable = (GradientDrawable) viewSubtitleIndicator.getBackground();

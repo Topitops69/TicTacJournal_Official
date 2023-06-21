@@ -34,6 +34,16 @@ public class Journal implements Serializable {
     @ColumnInfo(name = "web_link")
     private String webLink;
 
+    @ColumnInfo(name = "firestoreId")
+    private String firestoreId;
+    public String getFirestoreId() {
+        return firestoreId;
+    }
+
+    public void setFirestoreId(String firestoreId) {
+        this.firestoreId = firestoreId;
+    }
+
     public int getId() {
         return id;
     }

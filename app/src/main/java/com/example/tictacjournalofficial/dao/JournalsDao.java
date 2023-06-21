@@ -21,7 +21,8 @@ public interface JournalsDao {
     LiveData<List<ColorCount>> getColorCounts();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertJournal(Journal journal);
+    long insertJournal(Journal journal);
+
 
     @Delete
     void deleteJournal(Journal journal);
