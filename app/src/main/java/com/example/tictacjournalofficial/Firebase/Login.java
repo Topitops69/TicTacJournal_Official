@@ -17,6 +17,7 @@ import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.activities.Home;
 import com.example.tictacjournalofficial.activities.MainActivity;
 import com.example.tictacjournalofficial.activities.Password;
+import com.example.tictacjournalofficial.activities.Welcome_end;
 import com.example.tictacjournalofficial.entities.Journal;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -86,7 +87,7 @@ public class Login extends AppCompatActivity {
                             //Login is successful
                             if(firebaseAuth.getCurrentUser().isEmailVerified()){
                                 //go to main activity
-                                startActivity(new Intent(Login.this, Home.class));
+                                startActivity(new Intent(Login.this, Welcome_end.class));
                             }else{
                                 Utility.showToast(Login.this, "Email not verified, Please verify your email.");
                                 changeInProgress(false);

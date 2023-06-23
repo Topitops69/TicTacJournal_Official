@@ -1,5 +1,4 @@
 package com.example.tictacjournalofficial.adapters;
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -7,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +16,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.algolia.search.saas.AlgoliaException;
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
+import com.algolia.search.saas.Index;
+import com.algolia.search.saas.Query;
 import com.bumptech.glide.Glide;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.activities.addJournal;
@@ -23,7 +28,13 @@ import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.makeramen.roundedimageview.RoundedImageView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +46,13 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
     private JournalsListeners journalsListeners;
     private Timer timer;
     private static List<Journal> journalsSource;
+
+    private String applicationID = "2HDEDMVLHZ";
+    private String apiKey = "5d443008cfff038c4c9138511dc11a53";
+    FirebaseFirestore db;
+    Index index;
+    Client client;
+    private List<Journal> journalList = new ArrayList<>();
 
     public static void filterList(List<Journal> newList){
         journalsSource = newList;
@@ -50,6 +68,10 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
         super(options);
         this.journalsListeners = journalsListeners;
         this.journalsSource = new ArrayList<>();  // initialize the list here
+        db = FirebaseFirestore.getInstance();
+        CollectionReference productRef = db.collection("journals");
+        client = new Client(applicationID, "61e582e8f6bbd9f8a75679a9a9d9b30a");
+        index = client.getIndex("journals");
     }
 
 
@@ -61,8 +83,10 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
                         R.layout.item_container_journal,
                         parent,
                         false
+
                 )
         );
+
     }
 
 
@@ -85,6 +109,8 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
             intent.putExtra("docId", docId); // this docId will now always be available with your Journal model
             v.getContext().startActivity(intent);
         });
+
+
     }
 
 
@@ -140,30 +166,67 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
 
     }
 
-    public void searchJournals(final String searchKeyword){
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
+    public void searchJournals(String keyword) {
+        Query query = new Query(keyword)
+                .setAttributesToRetrieve("title", "subtitle", "noteText", "dateTime", "color", "imagePath", "webLink")
+                .setHitsPerPage(50);
+
+        index.searchAsync(query, new CompletionHandler() {
             @Override
-            public void run() {
-                if(searchKeyword.trim().isEmpty()){
-                } else {
-                    ArrayList<Journal> temp = new ArrayList<>();
-                    for(Journal journal : journalsSource){
-                        if(journal.getTitle().toLowerCase().contains(searchKeyword.toLowerCase())
-                                || journal.getSubtitle().toLowerCase().contains(searchKeyword.toLowerCase())
-                                || journal.getNoteText().toLowerCase().contains(searchKeyword.toLowerCase())){
-                            temp.add(journal);
-                        }
-                    }
+            public void requestCompleted(JSONObject content, AlgoliaException error) {
+                if (error != null) {
+                    Log.e("AlgoliaError", "Algolia Search Error: " + error.getMessage());
+                    return;
                 }
-                new Handler(Looper.getMainLooper()).post(() -> notifyDataSetChanged());
+
+                try {
+                    JSONArray hits = content.getJSONArray("hits");
+                    journalList.clear();
+
+                    for (int i = 0; i < hits.length(); i++) {
+                        JSONObject jsonObject = hits.getJSONObject(i);
+
+                        String title = jsonObject.getString("title");
+                        String subtitle = jsonObject.getString("subtitle");
+                        String noteText = jsonObject.getString("noteText");
+                        String dateTime = jsonObject.getString("dateTime");
+                        String color = jsonObject.getString("color");
+                        String imagePath = jsonObject.getString("imagePath");
+                        String webLink = jsonObject.getString("webLink");
+
+                        Journal journal = new Journal();
+                        journal.setTitle(title);
+                        journal.setSubtitle(subtitle);
+                        journal.setNoteText(noteText);
+                        journal.setDateTime(dateTime);
+                        journal.setColor(color);
+                        journal.setImagePath(imagePath);
+                        journal.setWebLink(webLink);
+
+                        journalList.add(journal);
+                    }
+
+                    // Update journalsSource and refresh the RecyclerView
+                    journalsSource = journalList;
+                    notifyDataSetChanged();
+
+                } catch (JSONException e) {
+                    Log.e("AlgoliaError", "Error parsing Algolia search results: " + e.getMessage());
+                }
             }
-        }, 500);
+        });
     }
+
 
     public void cancelTimer(){
         if(timer != null){
             timer.cancel();
         }
     }
+
+    public void updateData(List<Journal> newJournals) {
+        this.journalsSource = newJournals;
+        notifyDataSetChanged();
+    }
+
 }
