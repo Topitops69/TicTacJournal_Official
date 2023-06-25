@@ -1,11 +1,9 @@
 package com.example.tictacjournalofficial.adapters;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +26,9 @@ import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.listeners.JournalsListeners;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -39,7 +39,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsAdapter.JournalViewHolder> {
 
@@ -53,12 +52,6 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
     Index index;
     Client client;
     private List<Journal> journalList = new ArrayList<>();
-
-    public static void filterList(List<Journal> newList){
-        journalsSource = newList;
-        //notifyDataSetChanged();
-
-    }
 
     public static List<Journal> getList(){
         return journalsSource;
@@ -168,7 +161,7 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
 
     public void searchJournals(String keyword) {
         Query query = new Query(keyword)
-                .setAttributesToRetrieve("title", "subtitle", "noteText", "dateTime", "color", "imagePath", "webLink")
+                .setAttributesToRetrieve("firestoreId")  // Make sure you're indexing the Firestore document ID in Algolia
                 .setHitsPerPage(50);
 
         index.searchAsync(query, new CompletionHandler() {
@@ -186,29 +179,23 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
                     for (int i = 0; i < hits.length(); i++) {
                         JSONObject jsonObject = hits.getJSONObject(i);
 
-                        String title = jsonObject.getString("title");
-                        String subtitle = jsonObject.getString("subtitle");
-                        String noteText = jsonObject.getString("noteText");
-                        String dateTime = jsonObject.getString("dateTime");
-                        String color = jsonObject.getString("color");
-                        String imagePath = jsonObject.getString("imagePath");
-                        String webLink = jsonObject.getString("webLink");
+                        String firestoreId = jsonObject.getString("firestoreId");  // Get the Firestore document ID from the search result
 
-                        Journal journal = new Journal();
-                        journal.setTitle(title);
-                        journal.setSubtitle(subtitle);
-                        journal.setNoteText(noteText);
-                        journal.setDateTime(dateTime);
-                        journal.setColor(color);
-                        journal.setImagePath(imagePath);
-                        journal.setWebLink(webLink);
+                        // Now you can fetch the full data for this item from Firestore using the Firestore document ID
+                        FirebaseFirestore.getInstance().collection("journals").document(firestoreId)
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        Journal journal = documentSnapshot.toObject(Journal.class);
+                                        journalList.add(journal);
 
-                        journalList.add(journal);
+                                        // Update journalsSource and refresh the RecyclerView
+                                        journalsSource = journalList;
+                                        notifyDataSetChanged();
+                                    }
+                                });
                     }
-
-                    // Update journalsSource and refresh the RecyclerView
-                    journalsSource = journalList;
-                    notifyDataSetChanged();
 
                 } catch (JSONException e) {
                     Log.e("AlgoliaError", "Error parsing Algolia search results: " + e.getMessage());
@@ -218,15 +205,11 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
     }
 
 
+
     public void cancelTimer(){
         if(timer != null){
             timer.cancel();
         }
-    }
-
-    public void updateData(List<Journal> newJournals) {
-        this.journalsSource = newJournals;
-        notifyDataSetChanged();
     }
 
 }

@@ -16,8 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -36,6 +40,7 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
+import com.example.tictacjournalofficial.activities.Home;
 import com.example.tictacjournalofficial.activities.addJournal;
 import com.example.tictacjournalofficial.adapters.JournalsAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
@@ -46,9 +51,13 @@ import com.example.tictacjournalofficial.quotes.QuotesData;
 import com.example.tictacjournalofficial.quotes.QuotesList;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -57,7 +66,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +91,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     private TextView quoteText, writerName;
     private ImageView btnCopy;
 
+
     EditText inputSearch;
     private final List < QuotesList > qList = new ArrayList < > ();
 
@@ -100,6 +112,10 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     FirebaseFirestore db;
     Index index;
     Client client;
+
+    private Map<String, String> firestoreIdMap = new HashMap<>();
+
+    private ListView listView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -109,6 +125,9 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         FragmentJournal1Binding binding = FragmentJournal1Binding.inflate(inflater, container, false);
 
         journalsRecycleView = binding.journalsRecyclerView;
+
+
+        listView = binding.listView;
 
         // Your query
         com.google.firebase.firestore.Query query = Utility.getCollectionReferenceForJournals().orderBy("dateTime", com.google.firebase.firestore.Query.Direction.DESCENDING);
@@ -167,10 +186,35 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             @Override
             public void afterTextChanged(Editable s) {
                 // This method is called to notify you that, somewhere within s, the text has been changed.
-                if(s.toString().isEmpty()) {
-                    getJournals(REQUEST_CODE_SHOW_JOURNALS, false); // show all the journals when search field is empty
-                }
+                Query query1 = new Query(inputSearch.getText().toString())
+                        .setAttributesToRetrieve("title", "firestoreId") // here you should use the actual firestoreId field name
+                        .setHitsPerPage(50);
+
+                index.searchAsync(query1, new CompletionHandler() {
+
+                    @Override
+                    public void requestCompleted(@Nullable JSONObject content, @Nullable AlgoliaException e) {
+                        try {
+                            JSONArray hits = content.getJSONArray("hits");
+                            List<String> list = new ArrayList<>();
+
+                            for(int i = 0; i<hits.length(); i++){
+                                JSONObject jsonObject = hits.getJSONObject(i);
+                                String title = jsonObject.getString("title");
+                                String firestoreId = jsonObject.getString("firestoreId"); // Get the firestoreId
+                                list.add(title);
+                                firestoreIdMap.put(title, firestoreId); // Store the firestoreId for this title
+                            }
+                            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_list_item, R.id.text1, list);
+                            listView.setAdapter(arrayAdapter);
+                        } catch (JSONException exception){
+                            exception.printStackTrace();
+                        }
+                    }
+
+                });
             }
+
         });
 
         inputSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -178,14 +222,53 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus || !inputSearch.getText().toString().isEmpty()) {
                     relativeLayout.setVisibility(View.GONE);
-                } else {
+                    journalsRecycleView.setVisibility(View.GONE);
+                    bottomNavigationView.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+                    db.collectionGroup("my_journals")  // change to collectionGroup from collection
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        List<String> list = new ArrayList<>();
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                           list.add(document.getString("title"));
+                                        }
+                                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_list_item, R.id.text1, list);
+                                        listView.setAdapter(arrayAdapter);
 
+                                    } else {
+                                        Log.d("AlgoliaError", "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+
+                } else {
+                    journalsRecycleView.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+                    bottomNavigationView.setVisibility(View.VISIBLE);
                     relativeLayout.setVisibility(View.VISIBLE);
                     hideKeyboard();
                     inputSearch.clearFocus(); // Add this line to remove focus
                 }
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Journal journal = (Journal) parent.getItemAtPosition(position);
+                String objectID = journal.getFirestoreId();
+                Intent intent = new Intent(getContext(), addJournal.class);
+                intent.putExtra("objectID", objectID);
+                startActivity(intent);
+            }
+        });
+
+
+
+
 
         btnCopy.setOnClickListener(new View.OnClickListener() {
 

@@ -35,6 +35,10 @@ import android.widget.Toast;
 
 import android.Manifest;
 
+import com.algolia.search.saas.AlgoliaException;
+import com.algolia.search.saas.Client;
+import com.algolia.search.saas.CompletionHandler;
+import com.algolia.search.saas.Index;
 import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
@@ -43,8 +47,12 @@ import com.example.tictacjournalofficial.quotes.QuotesList;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.ktx.Firebase;
+
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -55,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class addJournal extends AppCompatActivity {
+
     private EditText inputJournalTitle, inputJournalSubtitle, inputJournalText;
     private TextView textDateTime;
     private ImageView imageJournal;
@@ -84,12 +93,24 @@ public class addJournal extends AppCompatActivity {
 
     boolean editMode = false;
     String docId;
+    private String applicationID = "2HDEDMVLHZ";
+    TextView tfLabel;
+
+    Index index;
+    Client client;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_journal);
 
+        db = FirebaseFirestore.getInstance();
+        CollectionReference productRef = db.collection("journals");
+        client = new Client(applicationID, "61e582e8f6bbd9f8a75679a9a9d9b30a");
+        index = client.getIndex("journals");
+
+        tfLabel = findViewById(R.id.tfLabel);
         docId = getIntent().getStringExtra("docId");
 
         if(docId!= null && docId.isEmpty()){
@@ -245,8 +266,10 @@ public class addJournal extends AppCompatActivity {
 
         if (editMode) {
             // If you're in edit mode, update the existing journal.
+            tfLabel.setText("Edit your journal");
             updateJournalToFirebase(journal);
         } else {
+            tfLabel.setText("Add new journal");
             // If you're not in edit mode, add a new journal.
             addJournalToFirebase(journal);
         }
@@ -346,13 +369,24 @@ public class addJournal extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Utility.showToast(addJournal.this, "Journal deleted successfully");
-                                Log.d("Debug", "Firestore operation: Success");
+                                // Delete the journal from Algolia
+                                index.deleteObjectAsync(alreadyAvailableJournal.getFirestoreId(), new CompletionHandler() {
+                                    @Override
+                                    public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
+                                        if (e == null) {
+                                            Utility.showToast(addJournal.this, "Journal deleted successfully");
+                                            Log.d("Debug", "Firestore and Algolia operation: Success");
 
-                                // If delete is successful, finish this activity and pass the result back to previous activity
-                                Intent resultIntent = new Intent();
-                                setResult(1, resultIntent);
-                                finish();
+                                            // If delete is successful, finish this activity and pass the result back to previous activity
+                                            Intent resultIntent = new Intent();
+                                            setResult(1, resultIntent);
+                                            finish();
+                                        } else {
+                                            Utility.showToast(addJournal.this, "Failed while deleting journal from Algolia");
+                                            Log.d("Debug", "Algolia operation: Failure");
+                                        }
+                                    }
+                                });
                             } else {
                                 Utility.showToast(addJournal.this, "Failed while deleting journal");
                                 Log.d("Debug", "Firestore operation: Failure");
@@ -372,6 +406,7 @@ public class addJournal extends AppCompatActivity {
 
         dialogDeleteJournal.show();
     }
+
 
 
     //Color part code
@@ -589,6 +624,13 @@ public class addJournal extends AppCompatActivity {
                 })
                 .setNegativeButton("No", null)
                 .show();
+    }
+
+    protected void onDestroy() {
+        if (dialogDeleteJournal != null && dialogDeleteJournal.isShowing()) {
+            dialogDeleteJournal.dismiss();
+        }
+        super.onDestroy();
     }
 }
 

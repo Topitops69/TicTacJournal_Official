@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/SCREEN"
+    android:textColor="#FFF"
     android:id="@+id/rootConstraintLayout"
     tools:context=".fragments.Journal1Fragment">
 
@@ -135,6 +136,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+    <ListView
+        android:id="@+id/listView"
+
+
+        android:layout_width="360dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="5dp"
+        android:clipToPadding="false"
+        android:paddingEnd="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_19sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        android:visibility="gone"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

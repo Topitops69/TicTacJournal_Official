@@ -120,18 +120,5 @@ public class Journal implements Serializable {
     }
 
 
-    public Map<String, Object> getData() {
-        Map<String, Object> journalData = new HashMap<>();
-        journalData.put("id", this.id);
-        journalData.put("title", this.title);
-        journalData.put("dateTime", this.dateTime);
-        journalData.put("subtitle", this.subtitle);
-        journalData.put("noteText", this.noteText);
-        journalData.put("imagePath", this.imagePath);
-        journalData.put("color", this.color);
-        journalData.put("webLink", this.webLink);
-
-        return journalData;
-    }
 
 }
