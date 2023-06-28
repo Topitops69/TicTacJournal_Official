@@ -1,5 +1,7 @@
 package com.example.tictacjournalofficial.activities;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -45,11 +47,17 @@ import com.example.tictacjournalofficial.database.JournalsDatabase;
 import com.example.tictacjournalofficial.entities.Journal;
 import com.example.tictacjournalofficial.quotes.QuotesList;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.ktx.Firebase;
 
 import org.json.JSONObject;
@@ -99,6 +107,7 @@ public class addJournal extends AppCompatActivity {
     Index index;
     Client client;
     FirebaseFirestore db;
+    String firestoreId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,10 +120,41 @@ public class addJournal extends AppCompatActivity {
         index = client.getIndex("journals");
 
         tfLabel = findViewById(R.id.tfLabel);
-        docId = getIntent().getStringExtra("docId");
 
-        if(docId!= null && docId.isEmpty()){
+       // docId = getIntent().getStringExtra("docId");
+        // Retrieve the Firestore Id from the Intent
+        docId = getIntent().getStringExtra("objectID");
+
+
+        if(docId!= null){
+            tfLabel.setText("Update");
             editMode = true;
+            // The user is in 'edit mode', fetch the document from Firestore
+            db.collection("journals").document("4hP0HPAz7ycxbQOUd7atPizq2Yj1").collection("my_journals").document(docId)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+
+                                DocumentSnapshot document = task.getResult();
+                                Log.d(TAG, "DocumentSnapshot data: " + task.getResult());
+
+                                if (document.exists()) {
+                                    // Convert the document into Journal object
+                                    Journal journal = document.toObject(Journal.class);
+                                    if (journal != null) {
+                                        alreadyAvailableJournal = journal;  // The journal is available now
+                                        setViewOrUpdateJournal();
+                                    }
+                                } else {
+                                    Log.d(TAG, "No such document for ID: " + docId);
+                                }
+                            } else {
+                                Log.d(TAG, "get failed with ", task.getException());
+                            }
+                        }
+                    });
         }
 
 
@@ -265,14 +305,17 @@ public class addJournal extends AppCompatActivity {
         journal.setImagePath(selectedImagePath);
 
         if (editMode) {
-            // If you're in edit mode, update the existing journal.
-            tfLabel.setText("Edit your journal");
+
             updateJournalToFirebase(journal);
         } else {
-            tfLabel.setText("Add new journal");
+
             // If you're not in edit mode, add a new journal.
             addJournalToFirebase(journal);
+            //updateJournalToFirebase(journal);
         }
+
+
+
     }
 
     void updateJournalToFirebase(Journal journal) {
@@ -319,33 +362,6 @@ public class addJournal extends AppCompatActivity {
         });
     }
 
-
-
-    //Save Journal to firebase
-    // Save Journal to Firebase
-    void saveJournalToFirebase(Journal journal){
-        DocumentReference documentReference;
-
-        if(editMode){
-            documentReference = Utility.getCollectionReferenceForJournals().document(docId);
-        }
-        else{
-            documentReference = Utility.getCollectionReferenceForJournals().document();
-        }
-
-        documentReference.set(journal).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Utility.showToast(addJournal.this, "Journal saved successfully");
-                    Log.d("Debug", "Firestore operation: Success");
-                } else {
-                    Utility.showToast(addJournal.this, "Failed while saving journal");
-                    Log.d("Debug", "Firestore operation: Failure");
-                }
-            }
-        });
-    }
 
     private void showDeleteJournalDialog(){
         if(dialogDeleteJournal == null){

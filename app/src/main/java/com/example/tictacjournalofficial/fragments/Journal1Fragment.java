@@ -1,5 +1,7 @@
 package com.example.tictacjournalofficial.fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -174,12 +176,13 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // This method is called to notify you that, within s, the count characters
                 // beginning at start are about to be replaced by new text with length after.
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // This method is called to notify you that, within s, the count characters
-                // beginning at start have just replaced old text that had length before.
+                // beginning at start have just r eplaced old text that had length before.
                 journalsAdapter.searchJournals(s.toString());
             }
 
@@ -191,7 +194,6 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                         .setHitsPerPage(50);
 
                 index.searchAsync(query1, new CompletionHandler() {
-
                     @Override
                     public void requestCompleted(@Nullable JSONObject content, @Nullable AlgoliaException e) {
                         try {
@@ -201,9 +203,10 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                             for(int i = 0; i<hits.length(); i++){
                                 JSONObject jsonObject = hits.getJSONObject(i);
                                 String title = jsonObject.getString("title");
-                                String firestoreId = jsonObject.getString("firestoreId"); // Get the firestoreId
+                                String firestoreId = jsonObject.getString("firestoreId"); // Get the Firestore ID
+
                                 list.add(title);
-                                firestoreIdMap.put(title, firestoreId); // Store the firestoreId for this title
+                                firestoreIdMap.put(title, firestoreId); // Store the Firestore ID for this title
                             }
                             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_list_item, R.id.text1, list);
                             listView.setAdapter(arrayAdapter);
@@ -211,8 +214,8 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                             exception.printStackTrace();
                         }
                     }
-
                 });
+
             }
 
         });
@@ -258,13 +261,24 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Journal journal = (Journal) parent.getItemAtPosition(position);
-                String objectID = journal.getFirestoreId();
-                Intent intent = new Intent(getContext(), addJournal.class);
-                intent.putExtra("objectID", objectID);
-                startActivity(intent);
+                String title = (String) parent.getItemAtPosition(position);
+                String firestoreId = firestoreIdMap.get(title); // Retrieve the Firestore Id using the title
+
+                // Log the Firestore ID
+                Log.d(TAG, "Firestore ID: " + firestoreId);
+
+                if (firestoreId != null) {
+                    Intent intent = new Intent(getContext(), addJournal.class);
+                    intent.putExtra("objectID", firestoreId);
+                    startActivity(intent);
+                } else {
+                    // Handle the case where the Firestore Id is null...
+                }
             }
         });
+
+
+
 
 
 
@@ -333,7 +347,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     }
 
     private void sendFirestoreDataToAlgolia() {
-        db.collectionGroup("my_journals")  // change to collectionGroup from collection
+        db.collectionGroup("my_journals")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -342,17 +356,23 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                             List<JSONObject> productList = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Map<String, Object> data = document.getData();
+
+                                // Check if imagePath exists and is non-empty
+                                String imagePath = (String) data.get("imagePath");
+                                if (imagePath == null || imagePath.isEmpty()) {
+                                    // Skip this document if imagePath is missing or empty
+                                    continue;
+                                }
+
                                 data.put("objectID", document.getId()); // Algolia requires an objectID field
 
-                                // You can use Gson or another JSON library to convert the Map to a JSONObject.
-                                // Note that this requires adding Gson to your dependencies.
+                                // Convert the Map to a JSONObject.
                                 JSONObject jsonObject = new JSONObject(data);
 
                                 productList.add(jsonObject);
                             }
 
-                            // Now we have a list of all our Firestore documents as JSONObjects.
-                            // We can add this list to Algolia.
+                            // Add the list to Algolia.
                             index.addObjectsAsync(new JSONArray(productList), new CompletionHandler() {
                                 @Override
                                 public void requestCompleted(JSONObject content, AlgoliaException error) {
@@ -369,6 +389,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                     }
                 });
     }
+
 
 
     // Method to save a journal to the index
