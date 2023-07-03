@@ -16,11 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
 import com.example.tictacjournalofficial.calendar.CalendarAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
@@ -31,12 +29,8 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.YearMonth;
@@ -46,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class InsightFragment extends Fragment implements CalendarAdapter.OnItemListener {
 
@@ -67,19 +60,9 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
         selectedDate = LocalDate.now();
         setMonthView();
 
-        binding.previousMonthButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                previousMonthAction();
-            }
-        });
+        binding.previousMonthButton.setOnClickListener(view -> previousMonthAction());
 
-        binding.nextMonthButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nextMonthAction();
-            }
-        });
+        binding.nextMonthButton.setOnClickListener(view -> nextMonthAction());
 
         font = ResourcesCompat.getFont(getContext(), R.font.ubuntu_regular);
 
@@ -97,31 +80,28 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
         // Assuming "my_journals" is the collection group ID
                 firestoreDB.collectionGroup("my_journals")
                         .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    HashMap<String, Integer> colorCountMap = new HashMap<>();
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                HashMap<String, Integer> colorCountMap = new HashMap<>();
 
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        String color = document.getString("color");
-                                        if (color != null) {
-                                            Integer count = colorCountMap.get(color);
-                                            if (count == null) {
-                                                count = 0;
-                                            }
-                                            colorCountMap.put(color, count + 1);
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String color = document.getString("color");
+                                    if (color != null) {
+                                        Integer count = colorCountMap.get(color);
+                                        if (count == null) {
+                                            count = 0;
                                         }
+                                        colorCountMap.put(color, count + 1);
                                     }
-
-                                    List<ColorCount> colorCounts = new ArrayList<>();
-                                    for (Map.Entry<String, Integer> entry : colorCountMap.entrySet()) {
-                                        colorCounts.add(new ColorCount(entry.getKey(), entry.getValue()));
-                                    }
-                                    loadMoodData(colorCounts);
-                                } else {
-                                    Log.d(TAG, "Error getting documents: ", task.getException());
                                 }
+
+                                List<ColorCount> colorCounts = new ArrayList<>();
+                                for (Map.Entry<String, Integer> entry : colorCountMap.entrySet()) {
+                                    colorCounts.add(new ColorCount(entry.getKey(), entry.getValue()));
+                                }
+                                loadMoodData(colorCounts);
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
                             }
                         });
 
@@ -142,12 +122,7 @@ public class InsightFragment extends Fragment implements CalendarAdapter.OnItemL
         legend.setYOffset(30f);
 
         db = JournalsDatabase.getDatabase(getContext());
-        db.journalDao().getColorCounts().observe(getViewLifecycleOwner(), new Observer<List<ColorCount>>() {
-            @Override
-            public void onChanged(List<ColorCount> colorCounts) {
-                loadMoodData(colorCounts);
-            }
-        });
+        db.journalDao().getColorCounts().observe(getViewLifecycleOwner(), colorCounts -> loadMoodData(colorCounts));
 
 
     }

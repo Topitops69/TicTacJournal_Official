@@ -181,7 +181,10 @@
                 android:layout_marginStart="111dp"
                 android:layout_marginEnd="134dp"
                 android:layout_marginBottom="26dp"
-                android:text="Add"
+
+                android:hint="Add"
+                android:fontFamily="@font/ubuntu_regular"
+                android:gravity="center"
                 app:layout_constraintBottom_toTopOf="@+id/inputJournal"
                 app:layout_constraintEnd_toStartOf="@+id/imageSave"
                 app:layout_constraintStart_toEndOf="@+id/imageBack" />

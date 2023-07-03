@@ -119,46 +119,31 @@ public class SettingsFragment extends Fragment {
             paymentFlow();
         });
 
-        btnTheme.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create Intent to start Theme class Activity
-                Intent intent = new Intent(getActivity(), Theme.class);
-                startActivity(intent);
-            }
+        btnTheme.setOnClickListener(v -> {
+            // Create Intent to start Theme class Activity
+            Intent intent = new Intent(getActivity(), Theme.class);
+            startActivity(intent);
         });
 
-        btnName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create Intent to start Welcome class Activity
-                Intent intent = new Intent(getActivity(), Welcome.class);
-                startActivity(intent);
-            }
+        btnName.setOnClickListener(v -> {
+            // Create Intent to start Welcome class Activity
+            Intent intent = new Intent(getActivity(), Welcome.class);
+            startActivity(intent);
         });
 
-        btnPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Password.class);
-                startActivity(intent);
-            }
+        btnPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Password.class);
+            startActivity(intent);
         });
 
-        btnEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CreateAccount.class);
-                startActivity(intent);
-            }
+        btnEmail.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), CreateAccount.class);
+            startActivity(intent);
         });
 
-        btnReminder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NotificationActivity.class);
-                startActivity(intent);
-            }
+        btnReminder.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NotificationActivity.class);
+            startActivity(intent);
         });
 
         return binding.getRoot();
@@ -179,29 +164,21 @@ public class SettingsFragment extends Fragment {
 
     private void getEmphericalKey() {
         StringRequest request = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/ephemeral_keys",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject object = new JSONObject(response);
+                response -> {
+                    try {
+                        JSONObject object = new JSONObject(response);
 
-                            EphericalKey = object.getString("id");
+                        EphericalKey = object.getString("id");
 
-                            //Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText( getActivity(), CustomerId, Toast.LENGTH_SHORT).show();
 
-                            getClientSecret(CustomerId, EphericalKey);
+                        getClientSecret(CustomerId, EphericalKey);
 
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
+
+                }, error -> Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show()) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
@@ -225,28 +202,20 @@ public class SettingsFragment extends Fragment {
 
     private void getClientSecret(String customerId, String ephericalKey) {
         StringRequest request = new StringRequest(Request.Method.POST, "https://api.stripe.com/v1/payment_intents",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject object = new JSONObject(response);
+                response -> {
+                    try {
+                        JSONObject object = new JSONObject(response);
 
-                            ClientSecret = object.getString("client_secret");
+                        ClientSecret = object.getString("client_secret");
 
-                            //Toast.makeText( getActivity(), ClientSecret, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText( getActivity(), ClientSecret, Toast.LENGTH_SHORT).show();
 
 
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
+
+                }, error -> Toast.makeText(getActivity(), error.getLocalizedMessage(), Toast.LENGTH_SHORT).show()) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();

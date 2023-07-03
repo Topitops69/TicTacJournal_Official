@@ -1,8 +1,5 @@
 package com.example.tictacjournalofficial.Firebase;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -11,17 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tictacjournalofficial.R;
-import com.example.tictacjournalofficial.activities.Home;
-import com.example.tictacjournalofficial.activities.MainActivity;
-import com.example.tictacjournalofficial.activities.Password;
 import com.example.tictacjournalofficial.activities.Welcome_end;
-import com.example.tictacjournalofficial.entities.Journal;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Login extends AppCompatActivity {
@@ -51,12 +42,9 @@ public class Login extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
 
 
-        tfCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateAccount.class);
-                startActivity(intent);
-            }
+        tfCreateAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), CreateAccount.class);
+            startActivity(intent);
         });
 
         
@@ -80,22 +68,19 @@ public class Login extends AppCompatActivity {
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(Login.this,
-                new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            //Login is successful
-                            if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                                //go to main activity
-                                startActivity(new Intent(Login.this, Welcome_end.class));
-                            }else{
-                                Utility.showToast(Login.this, "Email not verified, Please verify your email.");
-                                changeInProgress(false);
-                            }
+                task -> {
+                    if(task.isSuccessful()){
+                        //Login is successful
+                        if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                            //go to main activity
+                            startActivity(new Intent(Login.this, Welcome_end.class));
                         }else{
-                            Utility.showToast(Login.this, task.getException().getLocalizedMessage());
+                            Utility.showToast(Login.this, "Email not verified, Please verify your email.");
                             changeInProgress(false);
                         }
+                    }else{
+                        Utility.showToast(Login.this, task.getException().getLocalizedMessage());
+                        changeInProgress(false);
                     }
                 }
         );

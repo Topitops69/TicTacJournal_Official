@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,7 +29,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -42,7 +40,6 @@ import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
-import com.example.tictacjournalofficial.activities.Home;
 import com.example.tictacjournalofficial.activities.addJournal;
 import com.example.tictacjournalofficial.adapters.JournalsAdapter;
 import com.example.tictacjournalofficial.database.JournalsDatabase;
@@ -53,13 +50,9 @@ import com.example.tictacjournalofficial.quotes.QuotesData;
 import com.example.tictacjournalofficial.quotes.QuotesList;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -68,7 +61,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -182,7 +174,7 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // This method is called to notify you that, within s, the count characters
-                // beginning at start have just r eplaced old text that had length before.
+                // beginning at start have just replaced old text that had length before.
                 journalsAdapter.searchJournals(s.toString());
             }
 
@@ -193,26 +185,23 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
                         .setAttributesToRetrieve("title", "firestoreId") // here you should use the actual firestoreId field name
                         .setHitsPerPage(50);
 
-                index.searchAsync(query1, new CompletionHandler() {
-                    @Override
-                    public void requestCompleted(@Nullable JSONObject content, @Nullable AlgoliaException e) {
-                        try {
-                            JSONArray hits = content.getJSONArray("hits");
-                            List<String> list = new ArrayList<>();
+                index.searchAsync(query1, (content, e) -> {
+                    try {
+                        JSONArray hits = content.getJSONArray("hits");
+                        List<String> list = new ArrayList<>();
 
-                            for(int i = 0; i<hits.length(); i++){
-                                JSONObject jsonObject = hits.getJSONObject(i);
-                                String title = jsonObject.getString("title");
-                                String firestoreId = jsonObject.getString("firestoreId"); // Get the Firestore ID
+                        for(int i = 0; i<hits.length(); i++){
+                            JSONObject jsonObject = hits.getJSONObject(i);
+                            String title = jsonObject.getString("title");
+                            String firestoreId = jsonObject.getString("firestoreId"); // Get the Firestore ID
 
-                                list.add(title);
-                                firestoreIdMap.put(title, firestoreId); // Store the Firestore ID for this title
-                            }
-                            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_list_item, R.id.text1, list);
-                            listView.setAdapter(arrayAdapter);
-                        } catch (JSONException exception){
-                            exception.printStackTrace();
+                            list.add(title);
+                            firestoreIdMap.put(title, firestoreId); // Store the Firestore ID for this title
                         }
+                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_list_item, R.id.text1, list);
+                        listView.setAdapter(arrayAdapter);
+                    } catch (JSONException exception){
+                        exception.printStackTrace();
                     }
                 });
 
@@ -220,61 +209,54 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
 
         });
 
-        inputSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus || !inputSearch.getText().toString().isEmpty()) {
-                    relativeLayout.setVisibility(View.GONE);
-                    journalsRecycleView.setVisibility(View.GONE);
-                    bottomNavigationView.setVisibility(View.GONE);
-                    listView.setVisibility(View.VISIBLE);
-                    db.collectionGroup("my_journals")  // change to collectionGroup from collection
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        List<String> list = new ArrayList<>();
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                           list.add(document.getString("title"));
-                                        }
-                                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_list_item, R.id.text1, list);
-                                        listView.setAdapter(arrayAdapter);
-
-                                    } else {
-                                        Log.d("AlgoliaError", "Error getting documents: ", task.getException());
+        inputSearch.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus || !inputSearch.getText().toString().isEmpty()) {
+                relativeLayout.setVisibility(View.GONE);
+                journalsRecycleView.setVisibility(View.GONE);
+                bottomNavigationView.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
+                db.collectionGroup("my_journals")  // change to collectionGroup from collection
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    List<String> list = new ArrayList<>();
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                       list.add(document.getString("title"));
                                     }
+                                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_list_item, R.id.text1, list);
+                                    listView.setAdapter(arrayAdapter);
+
+                                } else {
+                                    Log.d("AlgoliaError", "Error getting documents: ", task.getException());
                                 }
-                            });
+                            }
+                        });
 
-                } else {
-                    journalsRecycleView.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.GONE);
-                    bottomNavigationView.setVisibility(View.VISIBLE);
-                    relativeLayout.setVisibility(View.VISIBLE);
-                    hideKeyboard();
-                    inputSearch.clearFocus(); // Add this line to remove focus
-                }
+            } else {
+                journalsRecycleView.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+                bottomNavigationView.setVisibility(View.VISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                hideKeyboard();
+                inputSearch.clearFocus(); // Add this line to remove focus
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String title = (String) parent.getItemAtPosition(position);
-                String firestoreId = firestoreIdMap.get(title); // Retrieve the Firestore Id using the title
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String title = (String) parent.getItemAtPosition(position);
+            String firestoreId = firestoreIdMap.get(title); // Retrieve the Firestore Id using the title
 
-                // Log the Firestore ID
-                Log.d(TAG, "Firestore ID: " + firestoreId);
+            // Log the Firestore ID
+            Log.d(TAG, "Firestore ID: " + firestoreId);
 
-                if (firestoreId != null) {
-                    Intent intent = new Intent(getContext(), addJournal.class);
-                    intent.putExtra("objectID", firestoreId);
-                    startActivity(intent);
-                } else {
-                    // Handle the case where the Firestore Id is null...
-                }
-            }
+            if (firestoreId != null) {
+                Intent intent = new Intent(getContext(), addJournal.class);
+                intent.putExtra("objectID", firestoreId);
+                startActivity(intent);
+            }  // Handle the case where the Firestore Id is null...
+
         });
 
 
@@ -284,17 +266,13 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
 
 
 
-        btnCopy.setOnClickListener(new View.OnClickListener() {
+        btnCopy.setOnClickListener(v -> {
+            ClipboardManager clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            CharSequence label;
+            ClipData clipData = ClipData.newPlainText("quote", qList.get(currentQuotePosition).getQoute() + "\nby " + qList.get(currentQuotePosition).getWriter());
+            clipboardManager.setPrimaryClip(clipData);
+            Toast.makeText(requireActivity(), "Quote copied to clipboard", Toast.LENGTH_SHORT).show();
 
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                CharSequence label;
-                ClipData clipData = ClipData.newPlainText("quote", qList.get(currentQuotePosition).getQoute() + "\nby " + qList.get(currentQuotePosition).getWriter());
-                clipboardManager.setPrimaryClip(clipData);
-                Toast.makeText(requireActivity(), "Quote copied to clipboard", Toast.LENGTH_SHORT).show();
-
-            }
         });
 
         //listeners
@@ -305,20 +283,17 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
         //default is pos 0
         setQuoteToTextView();
 
-        relativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // your code here
+        relativeLayout.setOnClickListener(v -> {
+            // your code here
 
-                currentQuotePosition++;
+            currentQuotePosition++;
 
-                //check if more quotes are available in the list else only the first quote
-                if (currentQuotePosition >= qList.size()) {
-                    currentQuotePosition = 0;
-                }
-
-                setQuoteToTextView();
+            //check if more quotes are available in the list else only the first quote
+            if (currentQuotePosition >= qList.size()) {
+                currentQuotePosition = 0;
             }
+
+            setQuoteToTextView();
         });
 
         final View rootView = binding.getRoot();
@@ -349,43 +324,40 @@ public class Journal1Fragment extends Fragment implements JournalsListeners {
     private void sendFirestoreDataToAlgolia() {
         db.collectionGroup("my_journals")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<JSONObject> productList = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Map<String, Object> data = document.getData();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<JSONObject> productList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> data = document.getData();
 
-                                // Check if imagePath exists and is non-empty
-                                String imagePath = (String) data.get("imagePath");
-                                if (imagePath == null || imagePath.isEmpty()) {
-                                    // Skip this document if imagePath is missing or empty
-                                    continue;
-                                }
-
-                                data.put("objectID", document.getId()); // Algolia requires an objectID field
-
-                                // Convert the Map to a JSONObject.
-                                JSONObject jsonObject = new JSONObject(data);
-
-                                productList.add(jsonObject);
+                            // Check if imagePath exists and is non-empty
+                            String imagePath = (String) data.get("imagePath");
+                            if (imagePath == null || imagePath.isEmpty()) {
+                                // Skip this document if imagePath is missing or empty
+                                continue;
                             }
 
-                            // Add the list to Algolia.
-                            index.addObjectsAsync(new JSONArray(productList), new CompletionHandler() {
-                                @Override
-                                public void requestCompleted(JSONObject content, AlgoliaException error) {
-                                    if (error != null) {
-                                        Log.e("AlgoliaError", "Error while adding: " + error.getMessage());
-                                    } else {
-                                        Log.i("AlgoliaSuccess", "Data successfully added to Algolia");
-                                    }
-                                }
-                            });
-                        } else {
-                            Log.d("FirestoreError", "Error getting documents: ", task.getException());
+                            data.put("objectID", document.getId()); // Algolia requires an objectID field
+
+                            // Convert the Map to a JSONObject.
+                            JSONObject jsonObject = new JSONObject(data);
+
+                            productList.add(jsonObject);
                         }
+
+                        // Add the list to Algolia.
+                        index.addObjectsAsync(new JSONArray(productList), new CompletionHandler() {
+                            @Override
+                            public void requestCompleted(JSONObject content, AlgoliaException error) {
+                                if (error != null) {
+                                    Log.e("AlgoliaError", "Error while adding: " + error.getMessage());
+                                } else {
+                                    Log.i("AlgoliaSuccess", "Data successfully added to Algolia");
+                                }
+                            }
+                        });
+                    } else {
+                        Log.d("FirestoreError", "Error getting documents: ", task.getException());
                     }
                 });
     }

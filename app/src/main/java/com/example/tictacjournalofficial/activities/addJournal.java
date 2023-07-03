@@ -2,6 +2,26 @@ package com.example.tictacjournalofficial.activities;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -11,63 +31,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.annotation.SuppressLint;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import android.Manifest;
-
-import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
-import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.example.tictacjournalofficial.Firebase.Utility;
 import com.example.tictacjournalofficial.R;
-import com.example.tictacjournalofficial.database.JournalsDatabase;
 import com.example.tictacjournalofficial.entities.Journal;
-import com.example.tictacjournalofficial.quotes.QuotesList;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.ktx.Firebase;
-
-import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class addJournal extends AppCompatActivity {
@@ -76,7 +54,6 @@ public class addJournal extends AppCompatActivity {
     private TextView textDateTime;
     private ImageView imageJournal;
 
-    private final List<QuotesList> quotesListList = new ArrayList<>();
     //color
     private String selectedJournalColor;
     private String selectedImagePath;
@@ -97,17 +74,14 @@ public class addJournal extends AppCompatActivity {
 
     private Journal journal = new Journal();
 
-    private DocumentReference documentReference;
-
     boolean editMode = false;
     String docId;
-    private String applicationID = "2HDEDMVLHZ";
+    private final String applicationID = "2HDEDMVLHZ";
     TextView tfLabel;
 
     Index index;
     Client client;
     FirebaseFirestore db;
-    String firestoreId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,32 +101,29 @@ public class addJournal extends AppCompatActivity {
 
 
         if(docId!= null){
-            tfLabel.setText("Update");
+            tfLabel.setHint("Update");
             editMode = true;
             // The user is in 'edit mode', fetch the document from Firestore
             db.collection("journals").document("4hP0HPAz7ycxbQOUd7atPizq2Yj1").collection("my_journals").document(docId)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
 
-                                DocumentSnapshot document = task.getResult();
-                                Log.d(TAG, "DocumentSnapshot data: " + task.getResult());
+                            DocumentSnapshot document = task.getResult();
+                            Log.d(TAG, "DocumentSnapshot data: " + task.getResult());
 
-                                if (document.exists()) {
-                                    // Convert the document into Journal object
-                                    Journal journal = document.toObject(Journal.class);
-                                    if (journal != null) {
-                                        alreadyAvailableJournal = journal;  // The journal is available now
-                                        setViewOrUpdateJournal();
-                                    }
-                                } else {
-                                    Log.d(TAG, "No such document for ID: " + docId);
+                            if (document.exists()) {
+                                // Convert the document into Journal object
+                                Journal journal = document.toObject(Journal.class);
+                                if (journal != null) {
+                                    alreadyAvailableJournal = journal;  // The journal is available now
+                                    setViewOrUpdateJournal();
                                 }
                             } else {
-                                Log.d(TAG, "get failed with ", task.getException());
+                                Log.d(TAG, "No such document for ID: " + docId);
                             }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
                         }
                     });
         }
@@ -224,14 +195,11 @@ public class addJournal extends AppCompatActivity {
         } // Don't set alreadyAvailableJournal to null here.
 
 
-        findViewById(R.id.removeImage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageJournal.setImageBitmap(null);
-                imageJournal.setVisibility(View.GONE);
-                findViewById(R.id.removeImage).setVisibility(View.GONE);
-                selectedImagePath = "";
-            }
+        findViewById(R.id.removeImage).setOnClickListener(v -> {
+            imageJournal.setImageBitmap(null);
+            imageJournal.setVisibility(View.GONE);
+            findViewById(R.id.removeImage).setVisibility(View.GONE);
+            selectedImagePath = "";
         });
 
         //initialize the color here:
@@ -321,21 +289,18 @@ public class addJournal extends AppCompatActivity {
     void updateJournalToFirebase(Journal journal) {
         DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document(journal.getFirestoreId());
 
-        documentReference.set(journal).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Utility.showToast(addJournal.this, "Journal updated successfully");
-                    Log.d("Debug", "Firestore operation: Success");
+        documentReference.set(journal).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Utility.showToast(addJournal.this, "Journal updated successfully");
+                Log.d("Debug", "Firestore operation: Success");
 
-                    // Here, 1 is the request code that you'll check in Journal1Fragment
-                    Intent resultIntent = new Intent();
-                    setResult(1, resultIntent);
-                    finish(); // close this activity
-                } else {
-                    Utility.showToast(addJournal.this, "Failed while updating journal");
-                    Log.d("Debug", "Firestore operation: Failure");
-                }
+                // Here, 1 is the request code that you'll check in Journal1Fragment
+                Intent resultIntent = new Intent();
+                setResult(1, resultIntent);
+                finish(); // close this activity
+            } else {
+                Utility.showToast(addJournal.this, "Failed while updating journal");
+                Log.d("Debug", "Firestore operation: Failure");
             }
         });
     }
@@ -343,21 +308,18 @@ public class addJournal extends AppCompatActivity {
     void addJournalToFirebase(Journal journal) {
         DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document(journal.getFirestoreId());
 
-        documentReference.set(journal).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Utility.showToast(addJournal.this, "Journal saved successfully");
-                    Log.d("Debug", "Firestore operation: Success");
+        documentReference.set(journal).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Utility.showToast(addJournal.this, "Journal saved successfully");
+                Log.d("Debug", "Firestore operation: Success");
 
-                    // Here, 1 is the request code that you'll check in Journal1Fragment
-                    Intent resultIntent = new Intent();
-                    setResult(1, resultIntent);
-                    finish(); // close this activity
-                } else {
-                    Utility.showToast(addJournal.this, "Failed while saving journal");
-                    Log.d("Debug", "Firestore operation: Failure");
-                }
+                // Here, 1 is the request code that you'll check in Journal1Fragment
+                Intent resultIntent = new Intent();
+                setResult(1, resultIntent);
+                finish(); // close this activity
+            } else {
+                Utility.showToast(addJournal.this, "Failed while saving journal");
+                Log.d("Debug", "Firestore operation: Failure");
             }
         });
     }
@@ -368,56 +330,42 @@ public class addJournal extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(addJournal.this);
             View view = LayoutInflater.from(this).inflate(
                     R.layout.layout_delete_journal,
-                    (ViewGroup) findViewById(R.id.layoutDeleteJournalContainer)
+                    findViewById(R.id.layoutDeleteJournalContainer)
             );
             builder.setView(view);
             dialogDeleteJournal = builder.create();
             if(dialogDeleteJournal.getWindow() != null){
                 dialogDeleteJournal.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             }
-            view.findViewById(R.id.textDeleteJournal).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Delete the journal from Firebase
-                    DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document(alreadyAvailableJournal.getFirestoreId());
+            view.findViewById(R.id.textDeleteJournal).setOnClickListener(v -> {
+                // Delete the journal from Firebase
+                DocumentReference documentReference = Utility.getCollectionReferenceForJournals().document(alreadyAvailableJournal.getFirestoreId());
 
-                    documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                // Delete the journal from Algolia
-                                index.deleteObjectAsync(alreadyAvailableJournal.getFirestoreId(), new CompletionHandler() {
-                                    @Override
-                                    public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
-                                        if (e == null) {
-                                            Utility.showToast(addJournal.this, "Journal deleted successfully");
-                                            Log.d("Debug", "Firestore and Algolia operation: Success");
+                documentReference.delete().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Delete the journal from Algolia
+                        index.deleteObjectAsync(alreadyAvailableJournal.getFirestoreId(), (jsonObject, e) -> {
+                            if (e == null) {
+                                Utility.showToast(addJournal.this, "Journal deleted successfully");
+                                Log.d("Debug", "Firestore and Algolia operation: Success");
 
-                                            // If delete is successful, finish this activity and pass the result back to previous activity
-                                            Intent resultIntent = new Intent();
-                                            setResult(1, resultIntent);
-                                            finish();
-                                        } else {
-                                            Utility.showToast(addJournal.this, "Failed while deleting journal from Algolia");
-                                            Log.d("Debug", "Algolia operation: Failure");
-                                        }
-                                    }
-                                });
+                                // If delete is successful, finish this activity and pass the result back to previous activity
+                                Intent resultIntent = new Intent();
+                                setResult(1, resultIntent);
+                                finish();
                             } else {
-                                Utility.showToast(addJournal.this, "Failed while deleting journal");
-                                Log.d("Debug", "Firestore operation: Failure");
+                                Utility.showToast(addJournal.this, "Failed while deleting journal from Algolia");
+                                Log.d("Debug", "Algolia operation: Failure");
                             }
-                        }
-                    });
-                }
+                        });
+                    } else {
+                        Utility.showToast(addJournal.this, "Failed while deleting journal");
+                        Log.d("Debug", "Firestore operation: Failure");
+                    }
+                });
             });
 
-            view.findViewById(R.id.textCancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogDeleteJournal.dismiss();
-                }
-            });
+            view.findViewById(R.id.textCancel).setOnClickListener(v -> dialogDeleteJournal.dismiss());
         }
 
         dialogDeleteJournal.show();
@@ -429,15 +377,12 @@ public class addJournal extends AppCompatActivity {
     private void initMiscellaneous(){
         final LinearLayout  layoutMiscellaneous = findViewById(R.id.layoutMiscellaneous);
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(layoutMiscellaneous);
-        layoutMiscellaneous.findViewById(R.id.textMiscellaneous).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-                else {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
+        layoutMiscellaneous.findViewById(R.id.textMiscellaneous).setOnClickListener(v -> {
+            if(bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+            else {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
 
@@ -447,74 +392,59 @@ public class addJournal extends AppCompatActivity {
         final ImageView imageColor4 = layoutMiscellaneous.findViewById(R.id.imageColor4);
         final ImageView imageColor5 = layoutMiscellaneous.findViewById(R.id.imageColor5);
 
-        layoutMiscellaneous.findViewById(R.id.viewColor1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Normal
-                selectedJournalColor = "#333333";
-                imageColor1.setImageResource(R.drawable.ic_ok2);
-                imageColor2.setImageResource(0);
-                imageColor3.setImageResource(0);
-                imageColor4.setImageResource(0);
-                imageColor5.setImageResource(0);
-                setSubtitleIndicatorColor();
-            }
+        layoutMiscellaneous.findViewById(R.id.viewColor1).setOnClickListener(v -> {
+            //Normal
+            selectedJournalColor = "#333333";
+            imageColor1.setImageResource(R.drawable.ic_ok2);
+            imageColor2.setImageResource(0);
+            imageColor3.setImageResource(0);
+            imageColor4.setImageResource(0);
+            imageColor5.setImageResource(0);
+            setSubtitleIndicatorColor();
         });
 
-        layoutMiscellaneous.findViewById(R.id.viewColor2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //excited
-                selectedJournalColor = "#fdbe3b";
-                imageColor1.setImageResource(0);
-                imageColor2.setImageResource(R.drawable.ic_excited);
-                imageColor3.setImageResource(0);
-                imageColor4.setImageResource(0);
-                imageColor5.setImageResource(0);
-                setSubtitleIndicatorColor();
-            }
+        layoutMiscellaneous.findViewById(R.id.viewColor2).setOnClickListener(v -> {
+            //excited
+            selectedJournalColor = "#fdbe3b";
+            imageColor1.setImageResource(0);
+            imageColor2.setImageResource(R.drawable.ic_grateful);
+            imageColor3.setImageResource(0);
+            imageColor4.setImageResource(0);
+            imageColor5.setImageResource(0);
+            setSubtitleIndicatorColor();
         });
 
-        layoutMiscellaneous.findViewById(R.id.viewColor3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Angry
-                selectedJournalColor = "#ff4842";
-                imageColor1.setImageResource(0);
-                imageColor2.setImageResource(0);
-                imageColor3.setImageResource(R.drawable.ic_angry1);
-                imageColor4.setImageResource(0);
-                imageColor5.setImageResource(0);
-                setSubtitleIndicatorColor();
-            }
+        layoutMiscellaneous.findViewById(R.id.viewColor3).setOnClickListener(v -> {
+            //Angry
+            selectedJournalColor = "#ff4842";
+            imageColor1.setImageResource(0);
+            imageColor2.setImageResource(0);
+            imageColor3.setImageResource(R.drawable.ic_angry1);
+            imageColor4.setImageResource(0);
+            imageColor5.setImageResource(0);
+            setSubtitleIndicatorColor();
         });
 
-        layoutMiscellaneous.findViewById(R.id.viewColor4).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Sad
-                selectedJournalColor = "#3A52Fc";
-                imageColor1.setImageResource(0);
-                imageColor2.setImageResource(0);
-                imageColor3.setImageResource(0);
-                imageColor4.setImageResource(R.drawable.ic_sad1);
-                imageColor5.setImageResource(0);
-                setSubtitleIndicatorColor();
-            }
+        layoutMiscellaneous.findViewById(R.id.viewColor4).setOnClickListener(v -> {
+            //Sad
+            selectedJournalColor = "#3A52Fc";
+            imageColor1.setImageResource(0);
+            imageColor2.setImageResource(0);
+            imageColor3.setImageResource(0);
+            imageColor4.setImageResource(R.drawable.ic_sad1);
+            imageColor5.setImageResource(0);
+            setSubtitleIndicatorColor();
         });
 
-        layoutMiscellaneous.findViewById(R.id.viewColor5).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //cool
-                selectedJournalColor = "#000000";
-                imageColor1.setImageResource(0);
-                imageColor2.setImageResource(0);
-                imageColor3.setImageResource(0);
-                imageColor4.setImageResource(0);
-                imageColor5.setImageResource(R.drawable.ic_cool);
-                setSubtitleIndicatorColor();
-            }
+        layoutMiscellaneous.findViewById(R.id.viewColor5).setOnClickListener(v -> {
+            //cool
+            selectedJournalColor = "#000000";
+            imageColor1.setImageResource(0);
+            imageColor2.setImageResource(0);
+            imageColor3.setImageResource(0);
+            imageColor4.setImageResource(0);
+            imageColor5.setImageResource(R.drawable.ic_depressed);
+            setSubtitleIndicatorColor();
         });
 
         if(alreadyAvailableJournal != null && alreadyAvailableJournal.getColor() != null && alreadyAvailableJournal.getColor().trim().isEmpty()){
@@ -536,31 +466,25 @@ public class addJournal extends AppCompatActivity {
 
         //add image code
         //add image code
-        layoutMiscellaneous.findViewById(R.id.layoutAddImage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                if (ContextCompat.checkSelfPermission(
-                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                            addJournal.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            REQUEST_CODE_STORAGE_PERMISSION
-                    );
-                } else {
-                    selectImageLauncher.launch(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
-                }
+        layoutMiscellaneous.findViewById(R.id.layoutAddImage).setOnClickListener(v -> {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            if (ContextCompat.checkSelfPermission(
+                    getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        addJournal.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_CODE_STORAGE_PERMISSION
+                );
+            } else {
+                selectImageLauncher.launch(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
             }
         });
         if(alreadyAvailableJournal != null){
             layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setVisibility(View.VISIBLE);
-            layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    showDeleteJournalDialog();
-                }
+            layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setOnClickListener(v -> {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                showDeleteJournalDialog();
             });
         }
 
@@ -630,14 +554,7 @@ public class addJournal extends AppCompatActivity {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Go Back?")
                 .setMessage("Are you sure you want to go back? Any unsaved changes will be lost.")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-
-                })
+                .setPositiveButton("Yes", (dialog, which) -> finish())
                 .setNegativeButton("No", null)
                 .show();
     }

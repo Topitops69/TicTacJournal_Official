@@ -1,13 +1,12 @@
 package com.example.tictacjournalofficial.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tictacjournalofficial.Firebase.CreateAccount;
 import com.example.tictacjournalofficial.Firebase.Login;
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView;
 
-        textView = (TextView) findViewById(R.id.textView);
+        textView = findViewById(R.id.textView);
         textView.setOnClickListener(view -> {
             Intent intent1 = new Intent(MainActivity.this, CreateAccount.class);
             startActivity(intent1);

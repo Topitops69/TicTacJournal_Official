@@ -1,6 +1,6 @@
 package com.example.tictacjournalofficial.activities;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -30,6 +30,7 @@ public class Home extends AppCompatActivity {
 
 
     //practise
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,11 +94,7 @@ public class Home extends AppCompatActivity {
                     .setTitle("Go back?")
                     .setMessage("Are you sure you want to go back? Any unsaved changes will be lost.")
                     .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            Home.super.onBackPressed();
-                        }
-                    }).create().show();
+                    .setPositiveButton(android.R.string.yes, (arg0, arg1) -> Home.super.onBackPressed()).create().show();
         }
     }
 

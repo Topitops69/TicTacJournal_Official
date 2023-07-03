@@ -5,12 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity(tableName = "journals")
 public class Journal implements Serializable {

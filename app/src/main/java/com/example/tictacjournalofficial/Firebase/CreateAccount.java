@@ -1,8 +1,5 @@
 package com.example.tictacjournalofficial.Firebase;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -11,18 +8,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tictacjournalofficial.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 
 public class CreateAccount extends AppCompatActivity {
 
-    Button btnBackup, btnSign;
+    Button btnSign;
     EditText tfEmail, tfPassword, tfConfirmPassword;
 
     ProgressBar progressBar;
@@ -44,12 +39,9 @@ public class CreateAccount extends AppCompatActivity {
 
 
 
-        loginTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-            }
+        loginTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
         });
 
         btnSign.setOnClickListener(v->createAccount());
@@ -76,20 +68,17 @@ public class CreateAccount extends AppCompatActivity {
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CreateAccount.this,
-                new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            //creating acc is done
-                            Utility.showToast(CreateAccount.this, "Account Successfully Created. Check email for verification");
+                task -> {
+                    if(task.isSuccessful()){
+                        //creating acc is done
+                        Utility.showToast(CreateAccount.this, "Account Successfully Created. Check email for verification");
 
-                            firebaseAuth.getCurrentUser().sendEmailVerification();
-                            firebaseAuth.signOut();
-                            finish();
-                        }else{
-                            Utility.showToast(CreateAccount.this, task.getException().getLocalizedMessage());
-                            changeInProgress(false);
-                        }
+                        firebaseAuth.getCurrentUser().sendEmailVerification();
+                        firebaseAuth.signOut();
+                        finish();
+                    }else{
+                        Utility.showToast(CreateAccount.this, task.getException().getLocalizedMessage());
+                        changeInProgress(false);
                     }
                 }
         );

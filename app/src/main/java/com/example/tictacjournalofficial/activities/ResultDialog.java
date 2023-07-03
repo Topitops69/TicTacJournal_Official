@@ -1,14 +1,12 @@
 package com.example.tictacjournalofficial.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.example.tictacjournalofficial.R;
 
@@ -27,12 +25,9 @@ public class ResultDialog extends Dialog {
         TextView messageText = findViewById(R.id.messageText);
         Button startAgainButton = findViewById(R.id.startAgainButton);
         messageText.setText(message);
-        startAgainButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ticTacToe.restartMatch();
-                dismiss();
-            }
+        startAgainButton.setOnClickListener(view -> {
+            ticTacToe.restartMatch();
+            dismiss();
         });
     }
 }

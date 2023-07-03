@@ -46,8 +46,8 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
     private Timer timer;
     private static List<Journal> journalsSource;
 
-    private String applicationID = "2HDEDMVLHZ";
-    private String apiKey = "5d443008cfff038c4c9138511dc11a53";
+    private final String applicationID = "2HDEDMVLHZ";
+    private final String apiKey = "5d443008cfff038c4c9138511dc11a53";
     FirebaseFirestore db;
     Index index;
     Client client;
@@ -164,42 +164,36 @@ public class JournalsAdapter extends FirestoreRecyclerAdapter<Journal, JournalsA
                 .setAttributesToRetrieve("firestoreId")  // Make sure you're indexing the Firestore document ID in Algolia
                 .setHitsPerPage(50);
 
-        index.searchAsync(query, new CompletionHandler() {
-            @Override
-            public void requestCompleted(JSONObject content, AlgoliaException error) {
-                if (error != null) {
-                    Log.e("AlgoliaError", "Algolia Search Error: " + error.getMessage());
-                    return;
+        index.searchAsync(query, (content, error) -> {
+            if (error != null) {
+                Log.e("AlgoliaError", "Algolia Search Error: " + error.getMessage());
+                return;
+            }
+
+            try {
+                JSONArray hits = content.getJSONArray("hits");
+                journalList.clear();
+
+                for (int i = 0; i < hits.length(); i++) {
+                    JSONObject jsonObject = hits.getJSONObject(i);
+
+                    String firestoreId = jsonObject.getString("firestoreId");  // Get the Firestore document ID from the search result
+
+                    // Now you can fetch the full data for this item from Firestore using the Firestore document ID
+                    FirebaseFirestore.getInstance().collection("journals").document(firestoreId)
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                Journal journal = documentSnapshot.toObject(Journal.class);
+                                journalList.add(journal);
+
+                                // Update journalsSource and refresh the RecyclerView
+                                journalsSource = journalList;
+                                notifyDataSetChanged();
+                            });
                 }
 
-                try {
-                    JSONArray hits = content.getJSONArray("hits");
-                    journalList.clear();
-
-                    for (int i = 0; i < hits.length(); i++) {
-                        JSONObject jsonObject = hits.getJSONObject(i);
-
-                        String firestoreId = jsonObject.getString("firestoreId");  // Get the Firestore document ID from the search result
-
-                        // Now you can fetch the full data for this item from Firestore using the Firestore document ID
-                        FirebaseFirestore.getInstance().collection("journals").document(firestoreId)
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        Journal journal = documentSnapshot.toObject(Journal.class);
-                                        journalList.add(journal);
-
-                                        // Update journalsSource and refresh the RecyclerView
-                                        journalsSource = journalList;
-                                        notifyDataSetChanged();
-                                    }
-                                });
-                    }
-
-                } catch (JSONException e) {
-                    Log.e("AlgoliaError", "Error parsing Algolia search results: " + e.getMessage());
-                }
+            } catch (JSONException e) {
+                Log.e("AlgoliaError", "Error parsing Algolia search results: " + e.getMessage());
             }
         });
     }
